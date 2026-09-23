@@ -64,7 +64,9 @@
   .hero .kicker{font-size:12px;letter-spacing:4px;}
   .hero h1{font-size:clamp(36px,6vw,64px);font-weight:700;line-height:1.08;letter-spacing:-1px;margin:6px 0 12px;}
   .hero h1 .name{background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    background-size:200% auto;animation:gradShift 5s linear infinite;}
+  @keyframes gradShift{to{background-position:200% center;}}
   .hero .role-line{font-size:clamp(20px,3.4vw,32px);font-weight:600;color:var(--muted);height:1.5em;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .hero .role-line .rot{color:#fff;position:relative;}
   .hero .role-line .rot::after{content:"|";color:var(--cyan);margin-left:2px;animation:blink 1s infinite;}
@@ -79,10 +81,11 @@
   .hero-quick{display:flex;gap:26px;margin-top:38px;flex-wrap:wrap;}
   .hq b{display:block;font-size:22px;font-weight:700;background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
   .hq span{font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase;}
-  .photo-wrap{width:300px;height:300px;border-radius:50%;margin:0 auto;position:relative;display:flex;align-items:center;justify-content:center;}
+  .photo-wrap{width:300px;height:300px;border-radius:50%;margin:0 auto;position:relative;display:flex;align-items:center;justify-content:center;animation:floaty 5s ease-in-out infinite;}
   .photo-wrap::before{content:"";position:absolute;inset:-22px;border-radius:50%;
     background:conic-gradient(var(--cyan),var(--violet),var(--blue),var(--cyan));filter:blur(18px);opacity:.5;animation:spin 6s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-16px);}}
   .photo-circle{width:88%;height:88%;border-radius:50%;overflow:hidden;border:3px solid #0a0f1c;position:relative;
     background:linear-gradient(160deg,#10202b,#070b13);display:flex;align-items:center;justify-content:center;
     font-size:70px;font-weight:800;color:var(--cyan);box-shadow:0 0 0 1px rgba(34,211,238,.4),0 20px 60px rgba(0,0,0,.5);}
@@ -256,7 +259,9 @@
       </div>
     </div>
     <div class="photo-wrap reveal">
-      <div class="photo-circle" id="heroPhoto">SL</div>
+      <div class="photo-circle" id="heroPhoto">
+        <img src="profile.jpg" alt="Sonu Laller" loading="eager">
+      </div>
     </div>
   </div>
   <a class="scroll-arrow" href="#about" aria-label="Scroll down">↓</a>
@@ -273,7 +278,8 @@
       <p>From setting up the frontend and backend, to wiring in an AI chatbot, fixing deployment issues, and running a full SEO pass — I did all of it myself, learning as I went. <span class="hl">I don't wait to "know enough" before starting. I start, and I figure it out.</span></p>
       <p>Alongside development, I also run an Instagram page where I create <b>AI-generated video content</b> — exploring how automation and new AI tools can speed up creative work.</p>
     </div>
-    <div class="about-photo reveal" id="aboutPhoto">SL
+    <div class="about-photo reveal" id="aboutPhoto">
+      <img src="profile.jpg" alt="Sonu Laller portrait" loading="lazy">
       <span class="badge">📍 Kasan · Kaithal</span>
     </div>
   </div>
@@ -477,6 +483,29 @@
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Count-up stats
+  const stats=[], statIO=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      const el=e.target,b=el.querySelector('b'),raw=b.dataset.count;
+      statIO.unobserve(el);
+      const start=performance.now(),dur=1400;
+      function step(t){
+        const p=Math.min((t-start)/dur,1),v=Math.round(raw*p);
+        b.textContent=v+(b.dataset.suffix||'');
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  },{threshold:.5});
+  document.querySelectorAll('.stat').forEach(el=>{
+    const b=el.querySelector('b');
+    const m=b.textContent.match(/^(\d+)([+%]*)$/);
+    if(m){b.dataset.count=m[1];b.dataset.suffix=m[2];}
+    else{b.dataset.count=parseFloat(b.textContent)||0;b.dataset.suffix='';}
+    statIO.observe(el);
+  });
 </script>
 </body>
 </html>
