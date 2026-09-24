@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sonulaller.github.io/sonu-portfolio/sitemap.xml
