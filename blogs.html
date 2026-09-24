@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blogs — Sonu Laller</title>
+<meta name="description" content="Blogs and writing by Sonu Laller — web development, AI tools, SEO, and building things from scratch.">
+<meta name="theme-color" content="#05070d">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blogs — Sonu Laller">
+<meta property="og:description" content="Writing on web development, AI tools, SEO, and building things from scratch.">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%2322d3ee"/><stop offset="1" stop-color="%238b5cf6"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="%2305070d"/><text x="50" y="68" font-size="52" font-family="Arial" font-weight="900" text-anchor="middle" fill="url(%23g)">S</text></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070d; --bg2:#0a0f1c; --surface:rgba(13,19,34,.72); --cyan:#22d3ee;
+    --blue:#3b82f6; --violet:#8b5cf6; --text:#eef4fb; --muted:#93a1b8;
+    --line:rgba(148,163,184,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,'Segoe UI',Arial,sans-serif;
+    overflow-x:hidden;line-height:1.6;}
+  ::selection{background:rgba(34,211,238,.3);}
+  canvas#net{position:fixed;inset:0;z-index:0;opacity:.5;pointer-events:none;}
+  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(600px 400px at 12% 8%,rgba(59,130,246,.16),transparent 60%),
+    radial-gradient(700px 500px at 88% 20%,rgba(139,92,246,.14),transparent 60%),
+    radial-gradient(800px 600px at 50% 100%,rgba(34,211,238,.10),transparent 60%);}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));
+    box-shadow:0 0 14px rgba(34,211,238,.7);transition:width .1s linear;}
+  .wrap{position:relative;z-index:1;}
+
+  h1,h2,h3,h4,.logo{font-family:'Space Grotesk','Trebuchet MS',sans-serif;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;
+    align-items:center;padding:18px 5vw;transition:.3s;}
+  nav.scrolled{background:rgba(5,7,13,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
+  .logo{font-weight:700;letter-spacing:2px;font-size:16px;cursor:pointer;color:#fff;text-decoration:none;}
+  .logo b{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .navlinks{display:flex;gap:24px;list-style:none;align-items:center;}
+  .navlinks a{color:#c6d0dd;text-decoration:none;font-size:12.5px;font-weight:600;letter-spacing:1.4px;position:relative;}
+  .navlinks a:not(.btn):after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));transition:.3s;}
+  .navlinks a:not(.btn):hover{color:#fff;}
+  .navlinks a:not(.btn):hover:after{width:100%;}
+  .navlinks .btn{border:1px solid rgba(34,211,238,.5);padding:9px 18px;border-radius:8px;color:#a5f3fc;}
+  .navlinks .btn:hover{background:rgba(34,211,238,.1);color:#fff;}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:60;}
+  .burger span{width:24px;height:2px;background:#fff;border-radius:2px;transition:.3s;}
+
+  section{padding:110px 5vw;position:relative;max-width:1200px;margin:0 auto;}
+  .sec-head{text-align:center;margin-bottom:60px;}
+  .kicker{display:inline-block;color:var(--cyan);font-size:11.5px;font-weight:700;letter-spacing:3px;
+    text-transform:uppercase;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);
+    padding:7px 16px;border-radius:30px;margin-bottom:18px;}
+  .sec-title{font-size:clamp(28px,4.2vw,42px);font-weight:700;letter-spacing:-.5px;}
+  .sec-title span{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+
+  /* BLOG HERO */
+  .blog-hero{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:120px;}
+  .blog-hero p.sub{color:var(--muted);max-width:56ch;margin:16px auto 0;font-size:16px;}
+  .tags-row{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;justify-content:center;}
+
+  /* BLOG CARDS */
+  .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .blog-card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--surface);
+    backdrop-filter:blur(8px);display:flex;flex-direction:column;transition:.4s cubic-bezier(.2,.7,.3,1);
+    position:relative;}
+  .blog-card::after{content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;opacity:0;
+    background:linear-gradient(150deg,rgba(34,211,238,.12),transparent 55%);transition:opacity .4s;}
+  .blog-card:hover{transform:translateY(-8px);border-color:rgba(34,211,238,.45);box-shadow:0 24px 60px rgba(34,211,238,.12);}
+  .blog-card:hover::after{opacity:1;}
+  .bc-banner{height:150px;display:flex;align-items:center;justify-content:center;font-size:44px;
+    background:linear-gradient(160deg,#0d1a26,#070b13);border-bottom:1px solid var(--line);position:relative;overflow:hidden;}
+  .bc-banner::before{content:"";position:absolute;inset:0;background:radial-gradient(200px circle at 50% -20%,rgba(34,211,238,.25),transparent 65%);}
+  .bc-banner .em{position:relative;filter:drop-shadow(0 8px 22px rgba(34,211,238,.4));animation:floaty 4s ease-in-out infinite;display:inline-block;}
+  .bc-body{padding:24px;display:flex;flex-direction:column;flex:1;}
+  .bc-meta{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:12px;}
+  .bc-cat{border:1px solid rgba(34,211,238,.4);padding:4px 11px;border-radius:20px;font-size:10.5px;font-weight:700;color:#a5f3fc;background:rgba(34,211,238,.07);}
+  .bc-body h3{font-size:19px;font-weight:700;line-height:1.4;margin-bottom:10px;}
+  .bc-body p{color:#aeb9c8;font-size:13.5px;line-height:1.75;margin-bottom:18px;flex:1;}
+  .bc-read{color:var(--cyan);font-weight:700;font-size:13.5px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+  .bc-read:hover{text-decoration:underline;}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+
+  /* NEWSLETTER */
+  .newsletter{max-width:620px;margin:80px auto 0;border:1px solid var(--line);border-radius:20px;padding:36px;text-align:center;
+    background:var(--surface);backdrop-filter:blur(10px);box-shadow:0 30px 80px rgba(0,0,0,.4);}
+  .newsletter h3{font-size:22px;font-weight:700;margin-bottom:10px;}
+  .newsletter p{color:var(--muted);font-size:14px;margin-bottom:22px;}
+  .nl-form{display:flex;gap:12px;}
+  .nl-form input{flex:1;background:#0a101c;border:1px solid var(--line);border-radius:10px;padding:14px 15px;color:#fff;
+    font-size:14px;font-family:inherit;transition:.25s;}
+  .nl-form input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15);}
+  .nl-form button{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;padding:0 24px;
+    border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;transition:.3s;font-family:inherit;position:relative;overflow:hidden;}
+  .nl-form button:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
+  .nl-note{font-size:12px;color:var(--muted);margin-top:14px;}
+
+  footer{text-align:center;padding:34px 20px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);}
+  footer a{color:var(--cyan);text-decoration:none;}
+
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .75s cubic-bezier(.2,.7,.3,1),transform .75s cubic-bezier(.2,.7,.3,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  @media(max-width:960px){
+    .blog-grid{grid-template-columns:repeat(2,1fr);}
+    .navlinks{position:fixed;top:0;right:0;height:100vh;width:72vw;background:rgba(10,15,28,.97);backdrop-filter:blur(16px);
+      flex-direction:column;justify-content:center;align-items:flex-start;padding:40px;gap:30px;
+      transform:translateX(100%);transition:transform .4s;box-shadow:-20px 0 60px rgba(0,0,0,.5);}
+    .navlinks.open{transform:translateX(0);}
+    .navlinks a{font-size:16px;}
+    .burger{display:flex;}
+    .burger.x span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .burger.x span:nth-child(2){opacity:0;}
+    .burger.x span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+  }
+  @media(max-width:560px){
+    .blog-grid{grid-template-columns:1fr;}
+    section{padding:80px 6vw;}
+    .nl-form{flex-direction:column;}
+    .nl-form button{padding:14px;}
+  }
+</style>
+</head>
+<body>
+<canvas id="net"></canvas>
+<div class="bg-glow"></div>
+<div id="progress"></div>
+<div class="wrap">
+
+<nav id="nav">
+  <a class="logo" href="index.html"><b>SONU</b>.LALLER</a>
+  <ul class="navlinks" id="navlinks">
+    <li><a href="index.html#home">HOME</a></li>
+    <li><a href="index.html#about">ABOUT</a></li>
+    <li><a href="index.html#projects">PROJECTS</a></li>
+    <li><a href="blogs.html" style="color:var(--cyan);">BLOGS</a></li>
+    <li><a class="btn" href="index.html#contact">CONTACT</a></li>
+  </ul>
+  <div class="burger" id="burger" aria-label="Toggle menu"><span></span><span></span><span></span></div>
+</nav>
+
+<section class="blog-hero">
+  <div class="kicker reveal">📝 My Writing</div>
+  <h1 class="sec-title reveal">Blogs & <span>Insights</span></h1>
+  <p class="sub reveal">Everything I learn while building stuff — web development, AI tools, SEO, and shipping real products from scratch.</p>
+</section>
+
+<section>
+  <div class="sec-head reveal">
+    <div class="kicker">Latest Posts</div>
+    <div class="sec-title">All <span>Articles</span></div>
+  </div>
+  <div class="blog-grid" id="blogGrid">
+    <article class="blog-card reveal">
+      <div class="bc-banner"><span class="em">💻</span></div>
+      <div class="bc-body">
+        <div class="bc-meta"><span class="bc-cat">Web Dev</span><span>—</span></div>
+        <h3>How I built a school website from scratch</h3>
+        <p>Writing about the real journey of building the NLSP website — no courses, just doing it: frontend, backend, deployment and the mistakes in between.</p>
+        <a class="bc-read" href="#">Read More →</a>
+      </div>
+    </article>
+
+    <article class="blog-card reveal">
+      <div class="bc-banner"><span class="em">🤖</span></div>
+      <div class="bc-body">
+        <div class="bc-meta"><span class="bc-cat">AI Tools</span><span>—</span></div>
+        <h3>Wiring a live AI chatbot into a real website</h3>
+        <p>How I added an AI assistant that answers visitor questions in real time — the API, the flow, and the little details that made it feel smooth.</p>
+        <a class="bc-read" href="#">Read More →</a>
+      </div>
+    </article>
+
+    <article class="blog-card reveal">
+      <div class="bc-banner"><span class="em">🔎</span></div>
+      <div class="bc-body">
+        <div class="bc-meta"><span class="bc-cat">SEO</span><span>—</span></div>
+        <h3>Running a full SEO pass when you're not an SEO expert</h3>
+        <p>Meta tags, sitemaps, structured data — the checklist I followed for the school site and what actually moved the needle on search.</p>
+        <a class="bc-read" href="#">Read More →</a>
+      </div>
+    </article>
+
+    <article class="blog-card reveal">
+      <div class="bc-banner"><span class="em">🎬</span></div>
+      <div class="bc-body">
+        <div class="bc-meta"><span class="bc-cat">AI Video</span><span>—</span></div>
+        <h3>Creating AI video content for Instagram regularly</h3>
+        <p>My workflow for planning, generating and publishing AI-made videos — and how automation speeds up creative work without killing the quality.</p>
+        <a class="bc-read" href="#">Read More →</a>
+      </div>
+    </article>
+
+    <article class="blog-card reveal">
+      <div class="bc-banner"><span class="em">🛠️</span></div>
+      <div class="bc-body">
+        <div class="bc-meta"><span class="bc-cat">Mindset</span><span>—</span></div>
+        <h3>Why I don't wait to "know enough" before starting</h3>
+        <p>Break things, fix them, repeat. The self-taught builder's mindset and why starting before feeling ready is the fastest way to actually learn.</p>
+        <a class="bc-read" href="#">Read More →</a>
+      </div>
+    </article>
+
+    <article class="blog-card reveal">
+      <div class="bc-banner"><span class="em">⚡</span></div>
+      <div class="bc-body">
+        <div class="bc-meta"><span class="bc-cat">Deploy</span><span>—</span></div>
+        <h3>Deploying with Vercel + Render: the things nobody tells you</h3>
+        <p>Frontend on Vercel, backend on Render — the deployment gotchas, environment variables, and how I fixed issues when things just stopped working.</p>
+        <a class="bc-read" href="#">Read More →</a>
+      </div>
+    </article>
+  </div>
+
+  <div class="newsletter reveal">
+    <h3>Never miss a post</h3>
+    <p>Get new articles straight to your inbox.</p>
+    <form id="newsForm" class="nl-form" novalidate>
+      <input type="email" id="newsEmail" placeholder="Enter your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="nl-note">✉️ Dieser just opens your email app — subscribe link is a placeholder you can point to a real service later.</p>
+  </div>
+</section>
+
+<footer>© 2026 Sonu Laller — Kasan, Kaithal, Haryana · <a href="index.html">← Back to Portfolio</a></footer>
+</div>
+
+<script>
+  const burger=document.getElementById('burger'), nl=document.getElementById('navlinks');
+  burger.addEventListener('click',function(){nl.classList.toggle('open');burger.classList.toggle('x');});
+  nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',function(){nl.classList.remove('open');burger.classList.remove('x');}));
+
+  const nav=document.getElementById('nav'), prog=document.getElementById('progress');
+  addEventListener('scroll',function(){
+    nav.classList.toggle('scrolled',scrollY>30);
+    const h=document.documentElement;
+    prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  });
+
+  document.getElementById('newsForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    const email=this.querySelector('input').value;
+    const subject=encodeURIComponent('Blog newsletter subscription');
+    const body=encodeURIComponent('Hello Sonu,\n\nPlease subscribe this email for blog updates:\n'+email);
+    window.location.href='mailto:lallerjaat97@gmail.com?subject='+subject+'&body='+body;
+  });
+
+  const c=document.getElementById('net'),ctx=c.getContext('2d');
+  let w=innerWidth,h=innerHeight,pts=[];
+  function size(){w=c.width=innerWidth;h=c.height=innerHeight;}
+  size();addEventListener('resize',size);
+  const N=Math.min(60,Math.floor((innerWidth*innerHeight)/18000));
+  for(let i=0;i<N;i++)pts.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3});
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;}
+    for(let i=0;i<pts.length;i++){
+      ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,1.6,0,Math.PI*2);ctx.fillStyle='rgba(34,211,238,.5)';ctx.fill();
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<140){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
+          const a=0.14*(1-d/140);
+          const grad=ctx.createLinearGradient(pts[i].x,pts[i].y,pts[j].x,pts[j].y);
+          grad.addColorStop(0,'rgba(34,211,238,'+a+')');grad.addColorStop(1,'rgba(139,92,246,'+a+')');
+          ctx.strokeStyle=grad;ctx.lineWidth=1;ctx.stroke();}
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
