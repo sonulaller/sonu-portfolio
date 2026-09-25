@@ -183,67 +183,7 @@
     <div class="kicker">Latest Posts</div>
     <h2 class="sec-title">All <span>Articles</span></h2>
   </div>
-  <div class="blog-grid" id="blogGrid">
-    <article class="blog-card reveal">
-      <div class="bc-banner"><span class="em">💻</span></div>
-      <div class="bc-body">
-        <div class="bc-meta"><span class="bc-cat">Web Dev</span><span>—</span></div>
-        <h3>How I built a school website from scratch</h3>
-        <p>Writing about the real journey of building the NLSP website — no courses, just doing it: frontend, backend, deployment and the mistakes in between.</p>
-        <a class="bc-read" href="#">Read More →</a>
-      </div>
-    </article>
-
-    <article class="blog-card reveal">
-      <div class="bc-banner"><span class="em">🤖</span></div>
-      <div class="bc-body">
-        <div class="bc-meta"><span class="bc-cat">AI Tools</span><span>—</span></div>
-        <h3>Wiring a live AI chatbot into a real website</h3>
-        <p>How I added an AI assistant that answers visitor questions in real time — the API, the flow, and the little details that made it feel smooth.</p>
-        <a class="bc-read" href="#">Read More →</a>
-      </div>
-    </article>
-
-    <article class="blog-card reveal">
-      <div class="bc-banner"><span class="em">🔎</span></div>
-      <div class="bc-body">
-        <div class="bc-meta"><span class="bc-cat">SEO</span><span>—</span></div>
-        <h3>Running a full SEO pass when you're not an SEO expert</h3>
-        <p>Meta tags, sitemaps, structured data — the checklist I followed for the school site and what actually moved the needle on search.</p>
-        <a class="bc-read" href="#">Read More →</a>
-      </div>
-    </article>
-
-    <article class="blog-card reveal">
-      <div class="bc-banner"><span class="em">🎬</span></div>
-      <div class="bc-body">
-        <div class="bc-meta"><span class="bc-cat">AI Video</span><span>—</span></div>
-        <h3>Creating AI video content for Instagram regularly</h3>
-        <p>My workflow for planning, generating and publishing AI-made videos — and how automation speeds up creative work without killing the quality.</p>
-        <a class="bc-read" href="#">Read More →</a>
-      </div>
-    </article>
-
-    <article class="blog-card reveal">
-      <div class="bc-banner"><span class="em">🛠️</span></div>
-      <div class="bc-body">
-        <div class="bc-meta"><span class="bc-cat">Mindset</span><span>—</span></div>
-        <h3>Why I don't wait to "know enough" before starting</h3>
-        <p>Break things, fix them, repeat. The self-taught builder's mindset and why starting before feeling ready is the fastest way to actually learn.</p>
-        <a class="bc-read" href="#">Read More →</a>
-      </div>
-    </article>
-
-    <article class="blog-card reveal">
-      <div class="bc-banner"><span class="em">⚡</span></div>
-      <div class="bc-body">
-        <div class="bc-meta"><span class="bc-cat">Deploy</span><span>—</span></div>
-        <h3>Deploying with Vercel + Render: the things nobody tells you</h3>
-        <p>Frontend on Vercel, backend on Render — the deployment gotchas, environment variables, and how I fixed issues when things just stopped working.</p>
-        <a class="bc-read" href="#">Read More →</a>
-      </div>
-    </article>
-  </div>
+  <div class="blog-grid" id="blogGrid"></div>
 
   <div class="newsletter reveal">
     <h3>Never miss a post</h3>
@@ -259,6 +199,7 @@
 <footer>© 2026 Sonu Laller — Kasan, Kaithal, Haryana · <a href="index.html">← Back to Portfolio</a></footer>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const burger=document.getElementById('burger'), nl=document.getElementById('navlinks');
   burger.addEventListener('click',function(){nl.classList.toggle('open');burger.classList.toggle('x');});
@@ -307,6 +248,36 @@
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Blogs loaded from Supabase (empty DB = empty section)
+  if(document.getElementById('blogGrid')){
+    const SUPABASE_URL='https://komhdriknaqunyxblvsw.supabase.co';
+    const SUPABASE_KEY='sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
+    const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    (async function loadBlogs(){
+      const grid=document.getElementById('blogGrid');
+      grid.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;">Loading posts…</div>';
+      try{
+        const {data,error}=await supabase.from('blogs').select('*').order('created_at',{ascending:false});
+        if(error)throw error;
+        if(!data||!data.length){grid.innerHTML='';return;}
+        grid.innerHTML=data.map(b=>`
+          <article class="blog-card reveal in">
+            <div class="bc-banner">${b.cover_image?`<img src="${b.cover_image}" alt="${b.title}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`:`<span class="em">${b.emoji||'📝'}</span>`}</div>
+            <div class="bc-body">
+              <div class="bc-meta"><span class="bc-cat">${b.category||'General'}</span><span>${b.created_at?new Date(b.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''}</span></div>
+              <h3>${b.title}</h3>
+              <p>${b.content||''}</p>
+              ${b.content&&b.content.length>320?`<a class="bc-read" href="#${b.id}">Read More →</a>`:''}
+            </div>
+          </article>`).join('');
+        document.querySelectorAll('#blogGrid .reveal').forEach(el=>el.classList.add('in'));
+      }catch(err){
+        console.error('Failed to load blogs:',err.message);
+        grid.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;">Could not load posts right now.</div>';
+      }
+    })();
+  }
 </script>
 </body>
 </html>

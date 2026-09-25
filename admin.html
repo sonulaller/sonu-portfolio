@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Panel — Sonu Laller</title>
+<meta name="theme-color" content="#05070d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#05070d; --bg2:#0a0f1c; --surface:rgba(13,19,34,.72); --cyan:#22d3ee;
+    --blue:#3b82f6; --violet:#8b5cf6; --text:#eef4fb; --muted:#93a1b8;
+    --line:rgba(148,163,184,.14); --red:#f87171;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,Arial,sans-serif;min-height:100vh;}
+  ::selection{background:rgba(34,211,238,.3);}
+  h1,h2,h3,.logo{font-family:'Space Grotesk',sans-serif;}
+  a{color:var(--cyan);}
+  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(600px 400px at 12% 8%,rgba(59,130,246,.14),transparent 60%),
+    radial-gradient(700px 500px at 88% 20%,rgba(139,92,246,.12),transparent 60%),
+    radial-gradient(800px 600px at 50% 100%,rgba(34,211,238,.08),transparent 60%);}
+  .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 5vw;}
+
+  /* LOGIN SCREEN */
+  #loginScreen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;
+    background:var(--bg);}
+  .login-card{border:1px solid var(--line);border-radius:20px;padding:44px 40px;width:100%;max-width:400px;
+    background:var(--surface);backdrop-filter:blur(12px);box-shadow:0 40px 100px rgba(0,0,0,.5);text-align:center;}
+  .login-logo{width:64px;height:64px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:800;background:linear-gradient(160deg,#10202b,#070b13);color:var(--cyan);
+    border:1px solid rgba(34,211,238,.4);box-shadow:0 0 30px rgba(34,211,238,.2);}
+  .login-card h1{font-size:24px;margin-bottom:8px;}
+  .login-card p{color:var(--muted);font-size:13.5px;margin-bottom:26px;}
+  .login-card input{width:100%;background:#0a101c;border:1px solid var(--line);border-radius:10px;padding:14px 15px;
+    color:#fff;font-size:14px;font-family:inherit;margin-bottom:16px;transition:.25s;}
+  .login-card input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15);}
+  .login-btn{width:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;padding:14px;
+    border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;transition:.25s;font-family:inherit;}
+  .login-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
+  .login-err{color:var(--red);font-size:13px;margin-top:12px;min-height:18px;}
+  .back-link{display:inline-block;margin-top:20px;color:var(--muted);font-size:12.5px;text-decoration:none;}
+  .back-link:hover{color:var(--cyan);}
+
+  /* HEADER / TABS */
+  header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(5,7,13,.85);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);}
+  .head-in{max-width:1100px;margin:0 auto;padding:16px 5vw;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  .logo{font-weight:700;letter-spacing:2px;font-size:15px;color:#fff;text-decoration:none;white-space:nowrap;}
+  .logo b{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .head-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  .head-actions a,.head-actions button{border:1px solid var(--line);padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;
+    color:var(--muted);text-decoration:none;cursor:pointer;background:none;font-family:inherit;transition:.25s;}
+  .head-actions a:hover,.head-actions button:hover{border-color:var(--cyan);color:var(--cyan);}
+  .tabs{display:flex;gap:6px;border:1px solid var(--line);border-radius:12px;padding:5px;background:var(--bg2);}
+  .tab{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:.25s;
+    border:none;background:none;font-family:inherit;white-space:nowrap;}
+  .tab:hover{color:#fff;}
+  .tab.active{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;box-shadow:0 6px 20px rgba(34,211,238,.25);}
+
+  main{padding-top:130px;padding-bottom:80px;min-height:100vh;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:14px;flex-wrap:wrap;}
+  .panel-head h2{font-size:26px;font-weight:700;}
+  .panel-head h2 span{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .add-btn{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;padding:12px 22px;border-radius:10px;
+    font-weight:700;font-size:14px;cursor:pointer;transition:.25s;font-family:inherit;}
+  .add-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
+  .status{font-size:13px;color:var(--muted);font-weight:600;}
+  .status.ok{color:var(--cyan);}
+  .status.err{color:var(--red);}
+
+  /* CARDS */
+  .card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--surface);backdrop-filter:blur(8px);margin-bottom:14px;}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .card-top h3{font-size:17px;font-weight:700;margin-bottom:6px;}
+  .card-top .sub{color:var(--muted);font-size:12.5px;}
+  .msg-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+  .msg-chip{border:1px solid rgba(34,211,238,.4);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#a5f3fc;background:rgba(34,211,238,.07);}
+  .msg-body{color:#c3cede;font-size:14px;line-height:1.7;}
+  .msg-date{color:var(--muted);font-size:11.5px;}
+  .card-actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .card-actions button{border:1px solid var(--line);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;
+    cursor:pointer;background:none;font-family:inherit;transition:.25s;color:var(--muted);}
+  .card-actions button.edit:hover{border-color:var(--cyan);color:var(--cyan);}
+  .card-actions button.del:hover{border-color:var(--red);color:var(--red);}
+  .stack-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .stack-pills span{border:1px solid var(--line);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;color:#dbe3ee;background:rgba(255,255,255,.03);}
+  .card a.live{color:var(--cyan);font-weight:700;font-size:12.5px;text-decoration:none;display:inline-block;margin-top:10px;}
+  .empty{border:1px dashed var(--line);border-radius:14px;padding:50px 20px;text-align:center;color:var(--muted);}
+  .empty .big{font-size:38px;display:block;margin-bottom:12px;}
+  .loading{text-align:center;color:var(--muted);padding:40px;}
+
+  /* MODAL */
+  .modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;
+    background:rgba(3,5,9,.75);backdrop-filter:blur(6px);}
+  .modal.open{display:flex;}
+  .modal-box{border:1px solid var(--line);border-radius:18px;padding:30px;width:100%;max-width:560px;background:var(--bg2);
+    box-shadow:0 40px 100px rgba(0,0,0,.6);margin:auto 0;}
+  .modal-box h3{font-size:20px;font-weight:700;margin-bottom:24px;}
+  .modal .f{margin-bottom:16px;}
+  .modal label{display:block;font-size:12.5px;font-weight:600;margin-bottom:7px;color:#dbe3ee;}
+  .modal input,.modal textarea,.modal select{width:100%;background:#0a101c;border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+    color:#fff;font-size:14px;font-family:inherit;transition:.25s;}
+  .modal textarea{resize:vertical;min-height:100px;}
+  .modal input:focus,.modal textarea:focus,.modal select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15);}
+  .modal .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .modal-actions{display:flex;gap:10px;margin-top:22px;}
+  .modal-actions button{flex:1;padding:13px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;transition:.25s;font-family:inherit;}
+  .btn-save{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;}
+  .btn-save:hover{opacity:.9;box-shadow:0 10px 30px rgba(34,211,238,.3);}
+  .btn-cancel{border:1px solid var(--line);background:none;color:var(--muted);}
+  .btn-cancel:hover{border-color:var(--muted);color:#fff;}
+
+  @media(max-width:640px){
+    .tabs{width:100%;justify-content:stretch;}
+    .tab{flex:1;padding:10px 8px;font-size:12px;}
+    .panel-head{flex-direction:column;align-items:stretch;}
+    .modal .row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">SL</div>
+    <h1>Admin Panel</h1>
+    <p>Sonu Laller — Portfolio Management</p>
+    <form id="loginForm">
+      <input type="password" id="loginPass" placeholder="Enter admin password" autocomplete="off">
+      <button class="login-btn" type="submit">Login</button>
+      <div class="login-err" id="loginErr"></div>
+    </form>
+    <a class="back-link" href="index.html">← Back to portfolio</a>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="wrap" id="app" style="display:none;">
+  <header>
+    <div class="head-in">
+      <a class="logo" href="index.html"><b>SONU</b>.LALLER · ADMIN</a>
+      <div class="head-actions">
+        <div class="tabs">
+          <button class="tab active" data-panel="messages">Messages</button>
+          <button class="tab" data-panel="projects">Projects</button>
+          <button class="tab" data-panel="blogs">Blogs</button>
+        </div>
+        <a href="index.html">View Site</a>
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="panel active" id="panel-messages">
+      <div class="panel-head">
+        <h2>Contact <span>Messages</span></h2>
+        <span class="status" id="msgStatus"></span>
+      </div>
+      <div id="messagesList"></div>
+    </div>
+
+    <div class="panel" id="panel-projects">
+      <div class="panel-head">
+        <h2>Manage <span>Projects</span></h2>
+        <button class="add-btn" onclick="openProjectModal()">+ Add Project</button>
+      </div>
+      <div class="status" id="projStatus" style="margin-bottom:14px;"></div>
+      <div id="projectsList"></div>
+    </div>
+
+    <div class="panel" id="panel-blogs">
+      <div class="panel-head">
+        <h2>Manage <span>Blogs</span></h2>
+        <button class="add-btn" onclick="openBlogModal()">+ Add Blog</button>
+      </div>
+      <div class="status" id="blogStatus" style="margin-bottom:14px;"></div>
+      <div id="blogsList"></div>
+    </div>
+  </main>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal" id="projModal">
+  <div class="modal-box">
+    <h3 id="projModalTitle">Add Project</h3>
+    <form id="projForm">
+      <div class="f"><label>Title *</label><input type="text" id="pTitle" required placeholder="e.g. NLSP School Website"></div>
+      <div class="f"><label>Description</label><textarea id="pDesc" placeholder="Describe the project"></textarea></div>
+      <div class="f"><label>Tech Stack (comma separated)</label><input type="text" id="pTech" placeholder="React, Node.js, Vercel"></div>
+      <div class="row">
+        <div class="f"><label>Live/GitHub Link</label><input type="url" id="pLink" placeholder="https://..."></div>
+        <div class="f"><label>Emoji / Icon</label><input type="text" id="pEmoji" placeholder="🚀" maxlength="4"></div>
+      </div>
+      <div class="f"><label>Tag</label><input type="text" id="pTag" placeholder="Flagship"></div>
+      <div class="modal-actions">
+        <button class="btn-save" type="submit">Save Project</button>
+        <button class="btn-cancel" type="button" onclick="closeModal('projModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- BLOG MODAL -->
+<div class="modal" id="blogModal">
+  <div class="modal-box">
+    <h3 id="blogModalTitle">Add Blog</h3>
+    <form id="blogForm">
+      <div class="f"><label>Title *</label><input type="text" id="bTitle" required placeholder="e.g. How I built a school website"></div>
+      <div class="f"><label>Content</label><textarea id="bContent" placeholder="Write your blog content here..."></textarea></div>
+      <div class="row">
+        <div class="f"><label>Category</label><input type="text" id="bCat" placeholder="Web Dev"></div>
+        <div class="f"><label>Cover Image URL</label><input type="url" id="bImage" placeholder="https://... (optional)"></div>
+      </div>
+      <div class="f"><label>Emoji / Icon</label><input type="text" id="bEmoji" placeholder="📝" maxlength="4"></div>
+      <div class="modal-actions">
+        <button class="btn-save" type="submit">Save Blog</button>
+        <button class="btn-cancel" type="button" onclick="closeModal('blogModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://komhdriknaqunyxblvsw.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
+  const ADMIN_PASS = 'sonu2026';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function setStatus(id, text, ok){const el=document.getElementById(id);
+    el.textContent=text;el.className='status '+(ok?'ok':'err');}
+  function esc(s){const d=document.createElement('div');d.textContent=(s==null?'':String(s));return d.innerHTML;}
+
+  // ---- LOGIN ----
+  document.getElementById('loginForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    const pass=document.getElementById('loginPass').value;
+    if(pass===ADMIN_PASS){
+      sessionStorage.setItem('sl_admin','1');
+      showApp();
+    }else{
+      document.getElementById('loginErr').textContent='Wrong password. Try again.';
+    }
+  });
+
+  function showApp(){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    loadAll();
+  }
+
+  const isAuthed=()=>sessionStorage.getItem('sl_admin')==='1';
+  if(isAuthed())showApp();
+  document.getElementById('logoutBtn').addEventListener('click',function(){
+    sessionStorage.removeItem('sl_admin');location.reload();
+  });
+
+  // ---- TABS ----
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+this.dataset.panel).classList.add('active');
+  }));
+
+  // ---- MODALS ----
+  function openModal(id){document.getElementById(id).classList.add('open');}
+  function closeModal(id){document.getElementById(id).classList.remove('open');}
+  document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',function(e){
+    if(e.target===this)this.classList.remove('open');
+  }));
+
+  // ---- LOAD ALL ----
+  async function loadAll(){await Promise.all([loadMessages(),loadProjects(),loadBlogs()]);}
+
+  // ---- MESSAGES (read-only) ----
+  async function loadMessages(){
+    const list=document.getElementById('messagesList');
+    setStatus('msgStatus','Loading messages...');list.innerHTML='';
+    try{
+      const {data,error}=await sb.from('messages').select('*').order('created_at',{ascending:false});
+      if(error)throw error;
+      setStatus('msgStatus',data.length+' message(s)',true);
+      if(!data.length){list.innerHTML=emptyState('📭','No messages yet. Contact form submissions will appear here.');return;}
+      list.innerHTML=data.map(m=>`
+        <div class="card">
+          <div class="msg-meta">
+            <span class="msg-chip">${esc(m.name)}</span>
+            <span class="msg-chip">${esc(m.email)}</span>
+            ${m.created_at?`<span class="msg-date">${new Date(m.created_at).toLocaleString()}</span>`:''}
+          </div>
+          <p class="msg-body">${esc(m.message)}</p>
+        </div>`).join('');
+    }catch(err){
+      setStatus('msgStatus','Failed to load messages: '+err.message,false);
+      list.innerHTML=emptyState('⚠️','Could not load messages. Check setup.sql was run in Supabase.');
+    }
+  }
+
+  // ---- PROJECTS (CRUD) ----
+  async function loadProjects(){
+    const list=document.getElementById('projectsList');
+    setStatus('projStatus','Loading projects...');list.innerHTML='';
+    try{
+      const {data,error}=await sb.from('projects').select('*').order('created_at',{ascending:false});
+      if(error)throw error;
+      setStatus('projStatus',data.length+' project(s)',true);
+      if(!data.length){list.innerHTML=emptyState('📦','No projects yet. Click "Add Project" to create one.');return;}
+      list.innerHTML=data.map(p=>`
+        <div class="card">
+          <div class="card-top">
+            <div>
+              <h3>${esc(p.image_emoji||'🚀')} ${esc(p.title)}</h3>
+              <div class="sub">${p.tag?esc(p.tag):''}</div>
+            </div>
+            <div class="card-actions">
+              <button class="edit" onclick='editProject(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Edit</button>
+              <button class="del" onclick="deleteProject('${p.id}')">Delete</button>
+            </div>
+          </div>
+          <p class="msg-body" style="margin-top:10px;">${esc(p.description||'')}</p>
+          ${p.tech_stack&&p.tech_stack.length?`<div class="stack-pills">${p.tech_stack.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}
+          ${p.live_link?`<a class="live" href="${esc(p.live_link)}" target="_blank" rel="noopener">Open link →</a>`:''}
+        </div>`).join('');
+    }catch(err){
+      setStatus('projStatus','Failed to load projects: '+err.message,false);
+      list.innerHTML=emptyState('⚠️','Could not load projects from Supabase.');
+    }
+  }
+
+  window.openProjectModal=function(){
+    document.getElementById('projModalTitle').textContent='Add Project';
+    document.getElementById('projForm').reset();
+    document.getElementById('pTitle').dataset.id='';
+    openModal('projModal');
+  };
+
+  window.editProject=function(p){
+    document.getElementById('projModalTitle').textContent='Edit Project';
+    document.getElementById('pTitle').value=p.title||'';
+    document.getElementById('pTitle').dataset.id=p.id;
+    document.getElementById('pDesc').value=p.description||'';
+    document.getElementById('pTech').value=(p.tech_stack||[]).join(', ');
+    document.getElementById('pLink').value=p.live_link||'';
+    document.getElementById('pEmoji').value=p.image_emoji||'';
+    document.getElementById('pTag').value=p.tag||'';
+    openModal('projModal');
+  };
+
+  document.getElementById('projForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    const id=document.getElementById('pTitle').dataset.id;
+    const tech=document.getElementById('pTech').value.split(',').map(t=>t.trim()).filter(Boolean);
+    const payload={
+      title:document.getElementById('pTitle').value.trim(),
+      description:document.getElementById('pDesc').value.trim(),
+      tech_stack:tech,
+      live_link:document.getElementById('pLink').value.trim(),
+      image_emoji:document.getElementById('pEmoji').value.trim()||'🚀',
+      tag:document.getElementById('pTag').value.trim()
+    };
+    try{
+      const {error}=id
+        ? await sb.from('projects').update(payload).eq('id',id)
+        : await sb.from('projects').insert(payload);
+      if(error)throw error;
+      closeModal('projModal');await loadProjects();
+    }catch(err){alert('Save failed: '+err.message);}
+  });
+
+  window.deleteProject=async function(id){
+    if(!confirm('Delete this project?'))return;
+    try{
+      const {error}=await sb.from('projects').delete().eq('id',id);
+      if(error)throw error;
+      await loadProjects();
+    }catch(err){alert('Delete failed: '+err.message);}
+  };
+
+  // ---- BLOGS (CRUD) ----
+  async function loadBlogs(){
+    const list=document.getElementById('blogsList');
+    setStatus('blogStatus','Loading blogs...');list.innerHTML='';
+    try{
+      const {data,error}=await sb.from('blogs').select('*').order('created_at',{ascending:false});
+      if(error)throw error;
+      setStatus('blogStatus',data.length+' blog post(s)',true);
+      if(!data.length){list.innerHTML=emptyState('📝','No blogs yet. Click "Add Blog" to create one.');return;}
+      list.innerHTML=data.map(b=>`
+        <div class="card">
+          <div class="card-top">
+            <div>
+              <h3>${esc(b.emoji||'📝')} ${esc(b.title)}</h3>
+              <div class="sub">${b.category?esc(b.category):''}${b.cover_image?' · <a href="'+esc(b.cover_image)+'" target="_blank" rel="noopener">Cover</a>':''}</div>
+            </div>
+            <div class="card-actions">
+              <button class="edit" onclick='editBlog(${JSON.stringify(b).replace(/'/g,"&#39;")})'>Edit</button>
+              <button class="del" onclick="deleteBlog('${b.id}')">Delete</button>
+            </div>
+          </div>
+          <p class="msg-body" style="margin-top:10px;max-height:120px;overflow:hidden;">${esc(b.content||'')}</p>
+        </div>`).join('');
+    }catch(err){
+      setStatus('blogStatus','Failed to load blogs: '+err.message,false);
+      list.innerHTML=emptyState('⚠️','Could not load blogs from Supabase.');
+    }
+  }
+
+  window.openBlogModal=function(){
+    document.getElementById('blogModalTitle').textContent='Add Blog';
+    document.getElementById('blogForm').reset();
+    document.getElementById('bTitle').dataset.id='';
+    openModal('blogModal');
+  };
+
+  window.editBlog=function(b){
+    document.getElementById('blogModalTitle').textContent='Edit Blog';
+    document.getElementById('bTitle').value=b.title||'';
+    document.getElementById('bTitle').dataset.id=b.id;
+    document.getElementById('bContent').value=b.content||'';
+    document.getElementById('bCat').value=b.category||'';
+    document.getElementById('bImage').value=b.cover_image||'';
+    document.getElementById('bEmoji').value=b.emoji||'';
+    openModal('blogModal');
+  };
+
+  document.getElementById('blogForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    const id=document.getElementById('bTitle').dataset.id;
+    const payload={
+      title:document.getElementById('bTitle').value.trim(),
+      content:document.getElementById('bContent').value.trim(),
+      category:document.getElementById('bCat').value.trim()||'General',
+      cover_image:document.getElementById('bImage').value.trim(),
+      emoji:document.getElementById('bEmoji').value.trim()||'📝'
+    };
+    try{
+      const {error}=id
+        ? await sb.from('blogs').update(payload).eq('id',id)
+        : await sb.from('blogs').insert(payload);
+      if(error)throw error;
+      closeModal('blogModal');await loadBlogs();
+    }catch(err){alert('Save failed: '+err.message);}
+  });
+
+  window.deleteBlog=async function(id){
+    if(!confirm('Delete this blog?'))return;
+    try{
+      const {error}=await sb.from('blogs').delete().eq('id',id);
+      if(error)throw error;
+      await loadBlogs();
+    }catch(err){alert('Delete failed: '+err.message);}
+  };
+
+  function emptyState(emoji,text){return `<div class="empty"><span class="big">${emoji}</span>${esc(text)}</div>`;}
+</script>
+</body>
+</html>

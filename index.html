@@ -442,40 +442,7 @@
     <h2 class="sec-title">My <span>Projects</span></h2>
   </div>
 
-  <div class="proj-card reveal">
-    <div class="proj-visual"><span class="em">🏫</span>NLSP School Website<br>nlspskasan.in</div>
-    <div>
-      <div class="proj-head"><h3>NLSP School Website</h3><span class="tag-pill">Flagship</span></div>
-      <p>A complete website for New Little Star Public School, Kasan — built and shipped end-to-end. Visitors can explore admissions, academics and facilities, chat with a live AI assistant for instant answers, and the site is fully optimized for search.</p>
-      <h5>Key Features</h5>
-      <ul>
-        <li>Live AI chatbot answering visitor questions in real time</li>
-        <li>Admission enquiry form with automated emails</li>
-        <li>Fully responsive across mobile, tablet &amp; desktop</li>
-        <li>Complete SEO pass — meta tags, sitemap, structured data</li>
-      </ul>
-      <h5>Technology Stack</h5>
-      <div class="stack-pills"><span>React + Vite</span><span>Node.js / Express</span><span>Groq AI (chatbot)</span><span>Vercel + Render</span></div>
-      <a class="live" href="https://nlspskasan.in" target="_blank" rel="noopener">View Live Site →</a>
-    </div>
-  </div>
-
-  <div class="proj-card reveal">
-    <div class="proj-visual"><span class="em">🎮</span>Screw Nuts<br>Puzzle Game</div>
-    <div>
-      <div class="proj-head"><h3>Screw Nuts — Game</h3><span class="tag-pill">Game Dev</span></div>
-      <p>A browser-based puzzle game built from scratch, focused on smooth interaction and clean level logic — a side project exploring game development outside of web/school work.</p>
-      <h5>Key Features</h5>
-      <ul>
-        <li>Custom puzzle mechanics built from the ground up</li>
-        <li>Smooth, responsive in-browser interactions</li>
-        <li>Built and version-controlled independently</li>
-      </ul>
-      <h5>Technology Stack</h5>
-      <div class="stack-pills"><span>JavaScript</span><span>Game Logic</span><span>Git / GitHub</span></div>
-      <a class="live" href="https://github.com/sonulaller/screw-nuts" target="_blank" rel="noopener">View on GitHub →</a>
-    </div>
-  </div>
+  <div id="projectsList"></div>
 </section>
 
 <section id="vision">
@@ -513,7 +480,7 @@
       <textarea id="message" name="message" placeholder="Tell me about your project or idea" required></textarea>
     </div>
     <button class="send-btn" type="submit">Send Message</button>
-    <p class="form-note">✨ Your email app will open with the message pre-filled, ready to send.</p>
+    <p class="form-note">Message is saved to the site database and I'll reply directly.</p>
   </form>
   <div class="contact-direct reveal">
     <a href="mailto:lallerjaat97@gmail.com">✉ lallerjaat97@gmail.com</a>
@@ -528,6 +495,7 @@
 
 <button id="toTop" aria-label="Back to top">↑</button>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // Mobile menu
   const burger=document.getElementById('burger'), nl=document.getElementById('navlinks');
@@ -546,15 +514,28 @@
   });
   toTop.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
 
-  // Contact form -> opens email app with prefilled message (works with any provider)
-  document.getElementById('contactForm').addEventListener('submit',function(e){
+  // Contact form -> saves to Supabase messages table
+  const SUPABASE_URL='https://komhdriknaqunyxblvsw.supabase.co';
+  const SUPABASE_KEY='sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
+  const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+  document.getElementById('contactForm').addEventListener('submit',async function(e){
     e.preventDefault();
+    const btn=this.querySelector('button[type=submit]');const note=this.querySelector('.form-note');
     const f=new FormData(this);
     const name=f.get('name'), email=f.get('email'), msg=f.get('message');
     if(!name||!email||!msg){alert('Please fill in all fields.');return;}
-    const subject=encodeURIComponent('Portfolio contact from '+name);
-    const body=encodeURIComponent(msg+'\n\n— '+name+' ('+email+')');
-    window.location.href='mailto:lallerjaat97@gmail.com?subject='+subject+'&body='+body;
+    btn.disabled=true;btn.textContent='Sending…';note.textContent='';
+    try{
+      const {error}=await supabase.from('messages').insert({name,email,message:msg});
+      if(error)throw error;
+      this.reset();
+      note.innerHTML='✅ Message sent! I will get back to you soon.';
+    }catch(err){
+      note.textContent='⚠️ Could not save your message. Try emailing lallerjaat97@gmail.com directly.';
+      console.error('Supabase insert failed:',err.message);
+    }
+    btn.disabled=false;btn.textContent='Send Message';
   });
 
   // Rotating roles
@@ -598,6 +579,34 @@
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // Projects loaded from Supabase (empty DB = empty section)
+  const listHolder=document.getElementById('projectsList');
+  if(listHolder){
+    (async function loadProjects(){
+      try{
+        const {data,error}=await supabase.from('projects').select('*').order('created_at',{ascending:false});
+        if(error)throw error;
+        if(!data||!data.length){listHolder.innerHTML='';return;}
+        listHolder.innerHTML=data.map(p=>{
+          const tech=(p.tech_stack||[]).map(t=>`<span>${t}</span>`).join('');
+          return `
+          <div class="proj-card reveal in">
+            <div class="proj-visual"><span class="em">${p.image_emoji||'🚀'}</span>${p.title}</div>
+            <div>
+              <div class="proj-head"><h3>${p.title}</h3>${p.tag?`<span class="tag-pill">${p.tag}</span>`:''}</div>
+              <p>${p.description||''}</p>
+              ${tech?`<h5>Technology Stack</h5><div class="stack-pills">${tech}</div>`:''}
+              ${p.live_link?`<a class="live" href="${p.live_link}" target="_blank" rel="noopener">View Live Site →</a>`:''}
+            </div>
+          </div>`;
+        }).join('');
+        document.querySelectorAll('#projectsList .reveal').forEach(el=>el.classList.add('in'));
+      }catch(err){
+        console.error('Failed to load projects:',err.message);
+      }
+    })();
+  }
 
   // Count-up stats
   const stats=[], statIO=new IntersectionObserver(entries=>{
