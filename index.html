@@ -517,7 +517,7 @@
   // Contact form -> saves to Supabase messages table
   const SUPABASE_URL='https://komhdriknaqunyxblvsw.supabase.co';
   const SUPABASE_KEY='sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
-  const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
   document.getElementById('contactForm').addEventListener('submit',async function(e){
     e.preventDefault();
@@ -527,7 +527,7 @@
     if(!name||!email||!msg){alert('Please fill in all fields.');return;}
     btn.disabled=true;btn.textContent='Sending…';note.textContent='';
     try{
-      const {error}=await supabase.from('messages').insert({name,email,message:msg});
+      const {error}=await supabaseClient.from('messages').insert({name,email,message:msg});
       if(error)throw error;
       this.reset();
       note.innerHTML='✅ Message sent! I will get back to you soon.';
@@ -585,7 +585,7 @@
   if(listHolder){
     (async function loadProjects(){
       try{
-        const {data,error}=await supabase.from('projects').select('*').order('created_at',{ascending:false});
+        const {data,error}=await supabaseClient.from('projects').select('*').order('created_at',{ascending:false});
         if(error)throw error;
         if(!data||!data.length){listHolder.innerHTML='';return;}
         listHolder.innerHTML=data.map(p=>{

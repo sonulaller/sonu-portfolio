@@ -253,12 +253,12 @@
   if(document.getElementById('blogGrid')){
     const SUPABASE_URL='https://komhdriknaqunyxblvsw.supabase.co';
     const SUPABASE_KEY='sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
-    const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     (async function loadBlogs(){
       const grid=document.getElementById('blogGrid');
       grid.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;">Loading posts…</div>';
       try{
-        const {data,error}=await supabase.from('blogs').select('*').order('created_at',{ascending:false});
+        const {data,error}=await supabaseClient.from('blogs').select('*').order('created_at',{ascending:false});
         if(error)throw error;
         if(!data||!data.length){grid.innerHTML='';return;}
         grid.innerHTML=data.map(b=>`

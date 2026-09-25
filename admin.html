@@ -37,6 +37,7 @@
     border:1px solid rgba(34,211,238,.4);box-shadow:0 0 30px rgba(34,211,238,.2);}
   .login-card h1{font-size:24px;margin-bottom:8px;}
   .login-card p{color:var(--muted);font-size:13.5px;margin-bottom:26px;}
+  .login-card label{display:block;text-align:left;font-size:12.5px;font-weight:600;color:#dbe3ee;margin:0 0 7px;}
   .login-card input{width:100%;background:#0a101c;border:1px solid var(--line);border-radius:10px;padding:14px 15px;
     color:#fff;font-size:14px;font-family:inherit;margin-bottom:16px;transition:.25s;}
   .login-card input:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15);}
@@ -56,6 +57,7 @@
   .head-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
   .head-actions a,.head-actions button{border:1px solid var(--line);padding:8px 14px;border-radius:8px;font-size:12.5px;font-weight:600;
     color:var(--muted);text-decoration:none;cursor:pointer;background:none;font-family:inherit;transition:.25s;}
+  .head-actions .user-email{padding:8px 2px;color:#dbe3ee;font-size:12.5px;font-weight:600;}
   .head-actions a:hover,.head-actions button:hover{border-color:var(--cyan);color:var(--cyan);}
   .tabs{display:flex;gap:6px;border:1px solid var(--line);border-radius:12px;padding:5px;background:var(--bg2);}
   .tab{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:.25s;
@@ -134,11 +136,14 @@
   <div class="login-card">
     <div class="login-logo">SL</div>
     <h1>Admin Panel</h1>
-    <p>Sonu Laller — Portfolio Management</p>
+    <p>Sign in with your Supabase admin account</p>
     <form id="loginForm">
-      <input type="password" id="loginPass" placeholder="Enter admin password" autocomplete="off">
-      <button class="login-btn" type="submit">Login</button>
-      <div class="login-err" id="loginErr"></div>
+      <label for="loginEmail">Admin email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="username" required>
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" placeholder="Enter your password" autocomplete="current-password" required>
+      <button class="login-btn" type="submit">Login with Supabase</button>
+      <div class="login-err" id="loginErr" role="alert"></div>
     </form>
     <a class="back-link" href="index.html">← Back to portfolio</a>
   </div>
@@ -150,6 +155,7 @@
     <div class="head-in">
       <a class="logo" href="index.html"><b>SONU</b>.LALLER · ADMIN</a>
       <div class="head-actions">
+        <span class="user-email" id="adminEmail"></span>
         <div class="tabs">
           <button class="tab active" data-panel="messages">Messages</button>
           <button class="tab" data-panel="projects">Projects</button>
@@ -234,36 +240,102 @@
 <script>
   const SUPABASE_URL = 'https://komhdriknaqunyxblvsw.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
-  const ADMIN_PASS = 'sonu2026';
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+  const loginScreen = document.getElementById('loginScreen');
+  const app = document.getElementById('app');
+  const loginForm = document.getElementById('loginForm');
+  const loginButton = loginForm.querySelector('button[type="submit"]');
+  const loginError = document.getElementById('loginErr');
+  let activeUserId = '';
 
   function setStatus(id, text, ok){const el=document.getElementById(id);
     el.textContent=text;el.className='status '+(ok?'ok':'err');}
   function esc(s){const d=document.createElement('div');d.textContent=(s==null?'':String(s));return d.innerHTML;}
-
-  // ---- LOGIN ----
-  document.getElementById('loginForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    const pass=document.getElementById('loginPass').value;
-    if(pass===ADMIN_PASS){
-      sessionStorage.setItem('sl_admin','1');
-      showApp();
-    }else{
-      document.getElementById('loginErr').textContent='Wrong password. Try again.';
-    }
-  });
-
-  function showApp(){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('app').style.display='block';
+  function safeUrl(value){
+    if(!value)return '';
+    try{
+      const url=new URL(value);
+      return ['http:','https:'].includes(url.protocol)?esc(url.href):'';
+    }catch(err){return '';}
+  }
+  const projectCache=new Map(), blogCache=new Map();
+  function isAdmin(user){return Boolean(user&&user.app_metadata&&user.app_metadata.role==='admin');}
+  function setLoginError(message){loginError.textContent=message||'';}
+  function setLoginLoading(loading){
+    loginButton.disabled=loading;
+    loginButton.textContent=loading?'Logging in…':'Login with Supabase';
+  }
+  function showLogin(message){
+    activeUserId='';
+    loginScreen.style.display='flex';
+    app.style.display='none';
+    document.getElementById('loginPass').value='';
+    setLoginError(message);
+  }
+  function showApp(user){
+    if(!isAdmin(user))return;
+    activeUserId=user.id;
+    document.getElementById('adminEmail').textContent=user.email||'';
+    loginScreen.style.display='none';
+    app.style.display='block';
     loadAll();
   }
 
-  const isAuthed=()=>sessionStorage.getItem('sl_admin')==='1';
-  if(isAuthed())showApp();
-  document.getElementById('logoutBtn').addEventListener('click',function(){
-    sessionStorage.removeItem('sl_admin');location.reload();
+  loginForm.addEventListener('submit',async function(e){
+    e.preventDefault();
+    if(!sb)return;
+    setLoginLoading(true);
+    setLoginError('');
+    const email=document.getElementById('loginEmail').value.trim();
+    const password=document.getElementById('loginPass').value;
+    try{
+      const {data,error}=await sb.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      if(!isAdmin(data.user)){
+        setLoginError('This Supabase account does not have the admin role.');
+        await sb.auth.signOut();
+        return;
+      }
+      showApp(data.user);
+    }catch(err){
+      setLoginError(err.message||'Unable to log in.');
+    }finally{
+      setLoginLoading(false);
+    }
   });
+
+  document.getElementById('logoutBtn').addEventListener('click',async function(){
+    if(sb)await sb.auth.signOut();
+    showLogin();
+  });
+
+  async function initializeAuth(){
+    if(!sb){
+      loginButton.disabled=true;
+      setLoginError('Supabase library could not load. Check your internet connection and refresh.');
+      return;
+    }
+    const {data,error}=await sb.auth.getSession();
+    if(error){
+      setLoginError('Unable to connect to Supabase: '+error.message);
+      return;
+    }
+    if(data.session){
+      if(isAdmin(data.session.user))showApp(data.session.user);
+      else{
+        setLoginError('This Supabase account does not have the admin role.');
+        await sb.auth.signOut();
+      }
+    }else showLogin();
+    sb.auth.onAuthStateChange((event,session)=>{
+      setTimeout(()=>{
+        if(event==='SIGNED_OUT'||!session)showLogin(loginError.textContent);
+        else if(!activeUserId)showApp(session.user);
+      },0);
+    });
+  }
+
+  initializeAuth();
 
   // ---- TABS ----
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
@@ -279,6 +351,22 @@
   document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',function(e){
     if(e.target===this)this.classList.remove('open');
   }));
+  document.getElementById('projectsList').addEventListener('click',function(e){
+    const button=e.target.closest('button[data-action]');
+    if(!button)return;
+    const project=projectCache.get(button.dataset.id);
+    if(!project)return;
+    if(button.dataset.action==='edit-project')window.editProject(project);
+    if(button.dataset.action==='delete-project')window.deleteProject(project.id);
+  });
+  document.getElementById('blogsList').addEventListener('click',function(e){
+    const button=e.target.closest('button[data-action]');
+    if(!button)return;
+    const blog=blogCache.get(button.dataset.id);
+    if(!blog)return;
+    if(button.dataset.action==='edit-blog')window.editBlog(blog);
+    if(button.dataset.action==='delete-blog')window.deleteBlog(blog.id);
+  });
 
   // ---- LOAD ALL ----
   async function loadAll(){await Promise.all([loadMessages(),loadProjects(),loadBlogs()]);}
@@ -316,7 +404,10 @@
       if(error)throw error;
       setStatus('projStatus',data.length+' project(s)',true);
       if(!data.length){list.innerHTML=emptyState('📦','No projects yet. Click "Add Project" to create one.');return;}
-      list.innerHTML=data.map(p=>`
+      projectCache.clear();
+      list.innerHTML=data.map(p=>{
+        projectCache.set(p.id,p);
+        return `
         <div class="card">
           <div class="card-top">
             <div>
@@ -324,14 +415,15 @@
               <div class="sub">${p.tag?esc(p.tag):''}</div>
             </div>
             <div class="card-actions">
-              <button class="edit" onclick='editProject(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Edit</button>
-              <button class="del" onclick="deleteProject('${p.id}')">Delete</button>
+              <button class="edit" type="button" data-action="edit-project" data-id="${esc(p.id)}">Edit</button>
+              <button class="del" type="button" data-action="delete-project" data-id="${esc(p.id)}">Delete</button>
             </div>
           </div>
           <p class="msg-body" style="margin-top:10px;">${esc(p.description||'')}</p>
           ${p.tech_stack&&p.tech_stack.length?`<div class="stack-pills">${p.tech_stack.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}
-          ${p.live_link?`<a class="live" href="${esc(p.live_link)}" target="_blank" rel="noopener">Open link →</a>`:''}
-        </div>`).join('');
+          ${safeUrl(p.live_link)?`<a class="live" href="${safeUrl(p.live_link)}" target="_blank" rel="noopener">Open link →</a>`:''}
+        </div>`;
+      }).join('');
     }catch(err){
       setStatus('projStatus','Failed to load projects: '+err.message,false);
       list.innerHTML=emptyState('⚠️','Could not load projects from Supabase.');
@@ -396,20 +488,24 @@
       if(error)throw error;
       setStatus('blogStatus',data.length+' blog post(s)',true);
       if(!data.length){list.innerHTML=emptyState('📝','No blogs yet. Click "Add Blog" to create one.');return;}
-      list.innerHTML=data.map(b=>`
+      blogCache.clear();
+      list.innerHTML=data.map(b=>{
+        blogCache.set(b.id,b);
+        return `
         <div class="card">
           <div class="card-top">
             <div>
               <h3>${esc(b.emoji||'📝')} ${esc(b.title)}</h3>
-              <div class="sub">${b.category?esc(b.category):''}${b.cover_image?' · <a href="'+esc(b.cover_image)+'" target="_blank" rel="noopener">Cover</a>':''}</div>
+              <div class="sub">${b.category?esc(b.category):''}${safeUrl(b.cover_image)?' · <a href="'+safeUrl(b.cover_image)+'" target="_blank" rel="noopener">Cover</a>':''}</div>
             </div>
             <div class="card-actions">
-              <button class="edit" onclick='editBlog(${JSON.stringify(b).replace(/'/g,"&#39;")})'>Edit</button>
-              <button class="del" onclick="deleteBlog('${b.id}')">Delete</button>
+              <button class="edit" type="button" data-action="edit-blog" data-id="${esc(b.id)}">Edit</button>
+              <button class="del" type="button" data-action="delete-blog" data-id="${esc(b.id)}">Delete</button>
             </div>
           </div>
           <p class="msg-body" style="margin-top:10px;max-height:120px;overflow:hidden;">${esc(b.content||'')}</p>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }catch(err){
       setStatus('blogStatus','Failed to load blogs: '+err.message,false);
       list.innerHTML=emptyState('⚠️','Could not load blogs from Supabase.');

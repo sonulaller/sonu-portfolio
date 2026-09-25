@@ -40,19 +40,41 @@ alter table public.projects  enable row level security;
 alter table public.blogs     enable row level security;
 alter table public.messages  enable row level security;
 
--- Projects: public read + admin write --------------
-create policy "projects_public_read"  on public.projects for select using (true);
-create policy "projects_admin_insert" on public.projects for insert with check (true);
-create policy "projects_admin_update" on public.projects for update using (true);
-create policy "projects_admin_delete" on public.projects for delete using (true);
+drop policy if exists "projects_public_read"  on public.projects;
+drop policy if exists "projects_admin_insert" on public.projects;
+drop policy if exists "projects_admin_update" on public.projects;
+drop policy if exists "projects_admin_delete" on public.projects;
+drop policy if exists "blogs_public_read"     on public.blogs;
+drop policy if exists "blogs_admin_insert"    on public.blogs;
+drop policy if exists "blogs_admin_update"    on public.blogs;
+drop policy if exists "blogs_admin_delete"    on public.blogs;
+drop policy if exists "messages_public_insert" on public.messages;
+drop policy if exists "messages_admin_read"    on public.messages;
+drop policy if exists "messages_admin_delete"  on public.messages;
 
--- Blogs: public read + admin write -----------------
-create policy "blogs_public_read"  on public.blogs for select using (true);
-create policy "blogs_admin_insert" on public.blogs for insert with check (true);
-create policy "blogs_admin_update" on public.blogs for update using (true);
-create policy "blogs_admin_delete" on public.blogs for delete using (true);
+-- Projects: public read + authenticated admin write
+create policy "projects_public_read" on public.projects for select to anon, authenticated using (true);
+create policy "projects_admin_insert" on public.projects for insert to authenticated
+  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+create policy "projects_admin_update" on public.projects for update to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+create policy "projects_admin_delete" on public.projects for delete to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
--- Messages: public insert (contact form) + admin read
-create policy "messages_public_insert" on public.messages for insert with check (true);
-create policy "messages_admin_read"    on public.messages for select using (true);
-create policy "messages_admin_delete"  on public.messages for delete using (true);
+-- Blogs: public read + authenticated admin write
+create policy "blogs_public_read" on public.blogs for select to anon, authenticated using (true);
+create policy "blogs_admin_insert" on public.blogs for insert to authenticated
+  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+create policy "blogs_admin_update" on public.blogs for update to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+create policy "blogs_admin_delete" on public.blogs for delete to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+-- Messages: public insert + authenticated admin access
+create policy "messages_public_insert" on public.messages for insert to anon, authenticated with check (true);
+create policy "messages_admin_read" on public.messages for select to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+create policy "messages_admin_delete" on public.messages for delete to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
