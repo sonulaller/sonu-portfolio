@@ -580,30 +580,50 @@
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  // Projects loaded from Supabase (empty DB = empty section)
   const listHolder=document.getElementById('projectsList');
   if(listHolder){
+    const fallbackProjects=[
+      {
+        title:'NLSP School Website',
+        description:'My first complete website: school frontend, backend, admissions, AI chatbot and a full SEO pass built end-to-end.',
+        tech_stack:['TypeScript','HTML','CSS','JavaScript','SEO','AI Chatbot'],
+        live_link:'https://github.com/sonulaller/NLSPSCHOOL',
+        image_emoji:'🏫',
+        tag:'Web Development'
+      },
+      {
+        title:'Screw Nuts',
+        description:'A browser puzzle game where you unscrew the nuts and clear the board. Playable online.',
+        tech_stack:['Web','Game Development','Puzzle'],
+        live_link:'https://remix-screw-nuts-mechanical-puzzles-1638.ai.studio',
+        image_emoji:'🔩',
+        tag:'Game'
+      }
+    ];
+    function renderProjects(items){
+      listHolder.innerHTML=items.map(p=>{
+        const tech=(p.tech_stack||[]).map(t=>`<span>${t}</span>`).join('');
+        return `
+        <div class="proj-card reveal in">
+          <div class="proj-visual"><span class="em">${p.image_emoji||'🚀'}</span>${p.title}</div>
+          <div>
+            <div class="proj-head"><h3>${p.title}</h3>${p.tag?`<span class="tag-pill">${p.tag}</span>`:''}</div>
+            <p>${p.description||''}</p>
+            ${tech?`<h5>Technology Stack</h5><div class="stack-pills">${tech}</div>`:''}
+            ${p.live_link?`<a class="live" href="${p.live_link}" target="_blank" rel="noopener">View Live Site →</a>`:''}
+          </div>
+        </div>`;
+      }).join('');
+      document.querySelectorAll('#projectsList .reveal').forEach(el=>el.classList.add('in'));
+    }
     (async function loadProjects(){
       try{
         const {data,error}=await supabaseClient.from('projects').select('*').order('created_at',{ascending:false});
         if(error)throw error;
-        if(!data||!data.length){listHolder.innerHTML='';return;}
-        listHolder.innerHTML=data.map(p=>{
-          const tech=(p.tech_stack||[]).map(t=>`<span>${t}</span>`).join('');
-          return `
-          <div class="proj-card reveal in">
-            <div class="proj-visual"><span class="em">${p.image_emoji||'🚀'}</span>${p.title}</div>
-            <div>
-              <div class="proj-head"><h3>${p.title}</h3>${p.tag?`<span class="tag-pill">${p.tag}</span>`:''}</div>
-              <p>${p.description||''}</p>
-              ${tech?`<h5>Technology Stack</h5><div class="stack-pills">${tech}</div>`:''}
-              ${p.live_link?`<a class="live" href="${p.live_link}" target="_blank" rel="noopener">View Live Site →</a>`:''}
-            </div>
-          </div>`;
-        }).join('');
-        document.querySelectorAll('#projectsList .reveal').forEach(el=>el.classList.add('in'));
+        renderProjects(data&&data.length?data:fallbackProjects);
       }catch(err){
         console.error('Failed to load projects:',err.message);
+        renderProjects(fallbackProjects);
       }
     })();
   }
