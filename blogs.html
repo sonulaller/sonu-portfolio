@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blogs & Insights — Sonu Laller</title>
-<meta name="description" content="Blogs by Sonu Laller — writing on web development, AI tools, SEO, AI video content, and building real products from scratch.">
+<title>Projects &amp; Blog — Sonu Laller | Web Developer &amp; AI Enthusiast</title>
+<meta name="description" content="All GitHub projects by Sonu Laller with live demos and source code, plus blog articles on web development, AI tools, SEO, and building real products from scratch.">
 <meta name="author" content="Sonu Laller">
+<meta name="keywords" content="Sonu Laller, projects, GitHub, web development, AI tools, SEO, blog, HTML, CSS, JavaScript">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#05070d">
 <link rel="canonical" href="https://sonulaller.github.io/sonu-portfolio/blogs.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sonu Laller — Portfolio">
-<meta property="og:title" content="Blogs & Insights — Sonu Laller">
-<meta property="og:description" content="Writing on web development, AI tools, SEO, AI video content, and shipping real products from scratch.">
+<meta property="og:title" content="Projects &amp; Blog — Sonu Laller">
+<meta property="og:description" content="Every GitHub project with live demo and source code, plus articles on web development, AI tools and SEO.">
 <meta property="og:url" content="https://sonulaller.github.io/sonu-portfolio/blogs.html">
 <meta property="og:image" content="https://sonulaller.github.io/sonu-portfolio/photo.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Blogs & Insights — Sonu Laller">
-<meta name="twitter:description" content="Writing on web development, AI tools, SEO, AI video content, and shipping real products from scratch.">
+<meta name="twitter:title" content="Projects &amp; Blog — Sonu Laller">
+<meta name="twitter:description" content="Every GitHub project with live demo and source code, plus articles on web development, AI tools and SEO.">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%2322d3ee"/><stop offset="1" stop-color="%238b5cf6"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="%2305070d"/><text x="50" y="68" font-size="52" font-family="Arial" font-weight="900" text-anchor="middle" fill="url(%23g)">S</text></svg>'>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,19 +26,46 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": "Sonu Laller — Blogs & Insights",
-  "url": "https://sonulaller.github.io/sonu-portfolio/blogs.html",
-  "description": "Writing on web development, AI tools, SEO, AI video content, and shipping real products from scratch.",
-  "author": {
-    "@type": "Person",
-    "name": "Sonu Laller",
-    "url": "https://sonulaller.github.io/sonu-portfolio/"
-  },
-  "publisher": {
-    "@type": "Person",
-    "name": "Sonu Laller"
-  }
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://sonulaller.github.io/sonu-portfolio/blogs.html",
+      "name": "Projects & Blog — Sonu Laller",
+      "url": "https://sonulaller.github.io/sonu-portfolio/blogs.html",
+      "description": "All GitHub projects by Sonu Laller with live demos and source code, plus articles on web development, AI tools, SEO and building real products.",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Person",
+        "name": "Sonu Laller",
+        "url": "https://sonulaller.github.io/sonu-portfolio/"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "GitHub projects by Sonu Laller",
+      "itemListOrder": "https://schema.org/ItemListOrderDescending",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "NLSP School Website",
+          "url": "https://github.com/sonulaller/NLSPSCHOOL"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Screw Nuts",
+          "url": "https://github.com/sonulaller/screw-nuts."
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Sonu Laller Portfolio",
+          "url": "https://github.com/sonulaller/sonu-portfolio"
+        }
+      ]
+    }
+  ]
 }
 </script>
 <style>
@@ -114,6 +142,38 @@
   .bc-read:hover{text-decoration:underline;}
   @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 
+  /* GITHUB PROJECTS */
+  .gh-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;}
+  .gh-head .sec-head{text-align:left;margin-bottom:0;}
+  .gh-all{color:var(--cyan);font-weight:700;font-size:13.5px;text-decoration:none;white-space:nowrap;}
+  .gh-all:hover{text-decoration:underline;}
+  .gh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px;}
+  .gh-card{border:1px solid var(--line);border-radius:18px;background:var(--surface);backdrop-filter:blur(8px);
+    padding:24px;display:flex;flex-direction:column;gap:12px;transition:.4s cubic-bezier(.2,.7,.3,1);
+    position:relative;overflow:hidden;}
+  .gh-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+  .gh-card:hover{transform:translateY(-8px);border-color:rgba(34,211,238,.45);box-shadow:0 24px 60px rgba(0,0,0,.45);}
+  .gh-card:hover::before{transform:scaleX(1);}
+  .gh-top{display:flex;align-items:center;gap:10px;}
+  .gh-emoji{font-size:26px;filter:drop-shadow(0 6px 16px rgba(34,211,238,.35));}
+  .gh-card h3{font-size:18px;font-weight:700;word-break:break-word;}
+  .gh-card p{color:#aeb9c8;font-size:13.5px;line-height:1.7;flex:1;}
+  .gh-lang{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-weight:600;}
+  .gh-lang i{width:10px;height:10px;border-radius:50%;background:var(--cyan);display:inline-block;}
+  .gh-topics{display:flex;flex-wrap:wrap;gap:7px;}
+  .gh-topics span{font-size:10.5px;font-weight:700;letter-spacing:.4px;color:#a5f3fc;background:rgba(34,211,238,.08);
+    border:1px solid rgba(34,211,238,.25);padding:4px 10px;border-radius:20px;}
+  .gh-foot{display:flex;gap:10px;flex-wrap:wrap;padding-top:6px;}
+  .gh-btn{font-size:12.5px;font-weight:700;text-decoration:none;padding:9px 16px;border-radius:9px;
+    border:1px solid rgba(34,211,238,.45);color:#a5f3fc;transition:.25s;}
+  .gh-btn:hover{background:rgba(34,211,238,.12);color:#fff;}
+  .gh-btn.solid{background:linear-gradient(90deg,var(--cyan),var(--blue));border:none;color:#03171d;}
+  .gh-btn.solid:hover{box-shadow:0 10px 26px rgba(34,211,238,.3);transform:translateY(-2px);}
+  .gh-note{text-align:center;color:var(--muted);font-size:13px;margin-top:26px;}
+  .gh-note a{color:var(--cyan);text-decoration:none;}
+  .gh-note a:hover{text-decoration:underline;}
+
   /* NEWSLETTER */
   .newsletter{max-width:620px;margin:80px auto 0;border:1px solid var(--line);border-radius:20px;padding:36px;text-align:center;
     background:var(--surface);backdrop-filter:blur(10px);box-shadow:0 30px 80px rgba(0,0,0,.4);}
@@ -136,6 +196,7 @@
 
   @media(max-width:960px){
     .blog-grid{grid-template-columns:repeat(2,1fr);}
+    .gh-grid{grid-template-columns:repeat(2,1fr);}
     .navlinks{position:fixed;top:0;right:0;height:100vh;width:72vw;background:rgba(10,15,28,.97);backdrop-filter:blur(16px);
       flex-direction:column;justify-content:center;align-items:flex-start;padding:40px;gap:30px;
       transform:translateX(100%);transition:transform .4s;box-shadow:-20px 0 60px rgba(0,0,0,.5);}
@@ -148,6 +209,7 @@
   }
   @media(max-width:560px){
     .blog-grid{grid-template-columns:1fr;}
+    .gh-grid{grid-template-columns:1fr;}
     section{padding:80px 6vw;}
     .nl-form{flex-direction:column;}
     .nl-form button{padding:14px;}
@@ -173,9 +235,24 @@
 </nav>
 
 <section class="blog-hero">
-  <div class="kicker reveal">📝 My Writing</div>
-  <h1 class="sec-title reveal">Blogs & <span>Insights</span></h1>
-  <p class="sub reveal">Everything I learn while building stuff — web development, AI tools, SEO, and shipping real products from scratch.</p>
+  <div class="kicker reveal">💻 Projects &amp; 📝 Writing</div>
+  <h1 class="sec-title reveal">Projects &amp; <span>Blog</span></h1>
+  <p class="sub reveal">Every project I build and ship on GitHub — with live demo and full source code — plus the articles I write while building them. Web development, AI tools, SEO and real products from scratch.</p>
+</section>
+
+<section id="projects">
+  <div class="gh-head reveal">
+    <div class="sec-head">
+      <div class="kicker">GitHub Projects</div>
+      <h2 class="sec-title">All My <span>Projects</span></h2>
+      <p class="sub" style="max-width:52ch;margin-top:14px;">Live-loaded straight from my GitHub profile — code, live demos and tech stack in one place.</p>
+    </div>
+    <a class="gh-all" href="https://github.com/sonulaller" target="_blank" rel="noopener">See all on GitHub →</a>
+  </div>
+  <div class="gh-grid" id="ghGrid">
+    <div style="text-align:center;color:var(--muted);grid-column:1/-1;padding:40px;">Loading my projects from GitHub…</div>
+  </div>
+  <p class="gh-note">Projects automatically load from <a href="https://github.com/sonulaller" target="_blank" rel="noopener">github.com/sonulaller</a>.</p>
 </section>
 
 <section>
@@ -248,6 +325,58 @@
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
   },{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // GitHub projects — loaded live from the public GitHub API
+  const GH_USER='sonulaller';
+  const ghGrid=document.getElementById('ghGrid');
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pickEmoji=(name,desc)=>{
+    const t=(name+' '+(desc||'')).toLowerCase();
+    if(/school|education|nlsp/.test(t))return '🏫';
+    if(/screw|nut|mechanical|puzzle/.test(t))return '🔩';
+    if(/portfolio|resume|cv/.test(t))return '💼';
+    if(/ai|llm|chatgpt|gemini/.test(t))return '🤖';
+    if(/game/.test(t))return '🎮';
+    if(/design|ui|css/.test(t))return '🎨';
+    return '🚀';
+  };
+  const LANG_COLOR={javascript:'#f7df1e',typescript:'#3178c6',html:'#e34c26',css:'#1572b6',python:'#3572a5',java:'#b07219',c:'#555555','c++':'#f34b7d',php:'#777bb4',ruby:'#cc342d',swift:'#f05138',kotlin:'#a97bff','c#':'#178600'};
+  const repoCard=r=>{
+    const desc=r.description||'Project source code and live demo built by Sonu Laller.';
+    const topics=(r.topics||[]).slice(0,4).map(t=>`<span>${esc(t)}</span>`).join('');
+    const live=r.homepage&&/^https?:/i.test(r.homepage)?r.homepage:'';
+    const lang=(r.language||'').toLowerCase();
+    return `<article class="gh-card reveal in">
+        <div class="gh-top"><span class="gh-emoji">${pickEmoji(r.name,r.description)}</span><h3>${esc(r.name)}</h3></div>
+        <p>${esc(desc)}</p>
+        ${topics?`<div class="gh-topics">${topics}</div>`:''}
+        <div class="gh-topics"><span class="gh-lang"><i style="background:${LANG_COLOR[lang]||'#22d3ee'}"></i>${esc(r.language||'Code')} · ★ ${r.stargazers_count||0} · Updated ${new Date(r.updated_at||Date.now()).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span></div>
+        <div class="gh-foot">
+          ${live?`<a class="gh-btn solid" href="${esc(live)}" target="_blank" rel="noopener">Live Demo ↗</a>`:''}
+          <a class="gh-btn" href="${esc(r.html_url)}" target="_blank" rel="noopener">Source Code ↗</a>
+        </div>
+      </article>`;
+  };
+  const FALLBACK=[
+    {name:'NLSPSCHOOL',description:'School website with students, teachers and class management.',language:'JavaScript',html_url:'https://github.com/sonulaller/NLSPSCHOOL',homepage:'',topics:['web','school'],stargazers_count:0,updated_at:'2026-01-01'},
+    {name:'screw-nuts.',description:'Mechanical screw-nut assembly puzzle game built for the browser.',language:'JavaScript',html_url:'https://github.com/sonulaller/screw-nuts.',homepage:'https://remix-screw-nuts-mechanical-puzzles-1638.ai.studio',topics:['game','puzzle'],stargazers_count:0,updated_at:'2026-01-01'},
+    {name:'sonu-portfolio',description:'This portfolio: frontend, Supabase backend and admin dashboard.',language:'JavaScript',html_url:'https://github.com/sonulaller/sonu-portfolio',homepage:'https://sonulaller.github.io/sonu-portfolio/',topics:['portfolio'],stargazers_count:0,updated_at:'2026-01-01'}
+  ];
+  if(ghGrid){
+    (async function loadRepos(){
+      try{
+        const res=await fetch('https://api.github.com/users/'+GH_USER+'/repos?per_page=100&sort=updated');
+        if(!res.ok)throw new Error('GitHub API '+res.status);
+        const all=await res.json();
+        const repos=Array.isArray(all)?all.filter(r=>!r.fork):[];
+        if(!repos.length)throw new Error('no repos');
+        ghGrid.innerHTML=repos.map(repoCard).join('');
+      }catch(err){
+        console.warn('GitHub projects fallback:',err.message);
+        ghGrid.innerHTML=FALLBACK.map(repoCard).join('');
+      }
+    })();
+  }
 
   // Blogs loaded from Supabase (empty DB = empty section)
   if(document.getElementById('blogGrid')){
