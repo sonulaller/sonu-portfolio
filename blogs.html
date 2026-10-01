@@ -340,11 +340,12 @@
     if(/design|ui|css/.test(t))return '🎨';
     return '🚀';
   };
+  const DEMO={'sonu-portfolio':'https://sonulaller.github.io/sonu-portfolio/','NLSPSCHOOL':'https://sonulaller.github.io/NLSPSCHOOL/','screw-nuts.':'https://remix-screw-nuts-mechanical-puzzles-1638.ai.studio'};
   const LANG_COLOR={javascript:'#f7df1e',typescript:'#3178c6',html:'#e34c26',css:'#1572b6',python:'#3572a5',java:'#b07219',c:'#555555','c++':'#f34b7d',php:'#777bb4',ruby:'#cc342d',swift:'#f05138',kotlin:'#a97bff','c#':'#178600'};
   const repoCard=r=>{
     const desc=r.description||'Project source code and live demo built by Sonu Laller.';
     const topics=(r.topics||[]).slice(0,4).map(t=>`<span>${esc(t)}</span>`).join('');
-    const live=r.homepage&&/^https?:/i.test(r.homepage)?r.homepage:'';
+    const live=DEMO[r.name]||(r.homepage&&/^https?:/i.test(r.homepage)?r.homepage:'');
     const lang=(r.language||'').toLowerCase();
     return `<article class="gh-card reveal in">
         <div class="gh-top"><span class="gh-emoji">${pickEmoji(r.name,r.description)}</span><h3>${esc(r.name)}</h3></div>
