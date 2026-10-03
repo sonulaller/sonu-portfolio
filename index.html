@@ -167,6 +167,9 @@
   .story-box p:last-child{margin-bottom:0;}
 
   .journey-title{text-align:center;font-size:26px;font-weight:700;margin:60px 0 32px;}
+  .journey-photo{max-width:760px;margin:0 auto 34px;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:var(--surface);box-shadow:0 20px 45px rgba(0,0,0,.35);}
+  .journey-photo img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;}
   .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
   .tl-item{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--surface);backdrop-filter:blur(8px);
     border-top:3px solid var(--cyan);transition:.35s cubic-bezier(.2,.7,.3,1);position:relative;overflow:hidden;}
@@ -342,7 +345,7 @@
       <div class="kicker">Hello, I'm</div>
       <h1>Sonu <span class="name">Laller</span></h1>
       <div class="role-line">Self-taught <span class="rot" id="rot">Web Developer</span></div>
-      <p class="tag">I build real, working websites from a small village in Haryana — shipped the NLSP School website end-to-end, went through a full SEO pass, and I'm still building. <b>I don't wait to "know enough" — I start, and I figure it out.</b></p>
+      <p class="tag" id="heroTag">I build real, working websites from a small village in Haryana — shipped the NLSP School website end-to-end, went through a full SEO pass, and I'm still building. <b>I don't wait to "know enough" — I start, and I figure it out.</b></p>
       <div class="hero-btns">
         <a class="hbtn primary" href="#projects">View My Work →</a>
         <a class="hbtn ghost" href="#contact">Get In Touch</a>
@@ -368,7 +371,7 @@
     <h2 class="sec-title">Who is <span>Sonu Laller</span>?</h2>
   </div>
   <div class="about-grid">
-    <div class="about-copy reveal">
+    <div class="about-copy reveal" id="aboutCopy">
       <p>I'm Sonu, from a small village called <b>Kasan</b> in District Kaithal, Haryana. I never went through a formal coding course — I picked up web development on my own, one problem at a time, by actually building something real: a complete website for <b>New Little Star Public School</b>, from the ground up.</p>
       <p>From setting up the frontend and backend, to wiring in an AI chatbot, fixing deployment issues, and running a full SEO pass — I did all of it myself, learning as I went. <span class="hl">I don't wait to "know enough" before starting. I start, and I figure it out.</span></p>
       <p>Alongside development, I also run an Instagram page where I create <b>AI-generated video content</b> — exploring how automation and new AI tools can speed up creative work.</p>
@@ -387,14 +390,17 @@
   </div>
 
   <div class="journey-title reveal">My Journey</div>
-  <div class="timeline">
+  <div class="journey-photo reveal" id="journeyPhoto" style="display:none;">
+    <img id="journeyPhotoImg" src="" alt="My journey" loading="lazy">
+  </div>
+  <div class="timeline" id="journeyTimeline">
     <div class="tl-item reveal"><div class="dot"></div><b>Getting Started</b><span>Started learning web development hands-on — HTML, CSS, React, and how real projects actually get built and shipped.</span></div>
     <div class="tl-item reveal"><div class="dot"></div><b>NLSP School Website</b><span>Built and shipped a complete school website end-to-end — frontend, backend, an AI chatbot, admissions system, and a full SEO overhaul.</span></div>
     <div class="tl-item reveal"><div class="dot"></div><b>Now</b><span>Actively building more projects, sharpening my dev skills, and creating AI-generated video content for Instagram.</span></div>
   </div>
 
   <div class="edu-title reveal">My Education</div>
-  <div class="edu-grid">
+  <div class="edu-grid" id="eduGrid">
     <div class="edu-card reveal">
       <span class="edu-tag">10th Class</span>
       <h3>Secondary Education</h3>
@@ -417,7 +423,7 @@
     <div class="kicker">Skills & Tools</div>
     <h2 class="sec-title">My <span>Capabilities</span></h2>
   </div>
-  <div class="cap-grid">
+  <div class="cap-grid" id="capGrid">
     <div class="cap reveal"><div class="ic">⚛️</div><span>React</span></div>
     <div class="cap reveal"><div class="ic">🟢</div><span>Node.js</span></div>
     <div class="cap reveal"><div class="ic">🔷</div><span>TypeScript</span></div>
@@ -450,7 +456,7 @@
     <div class="kicker">My Vision</div>
     <h2 class="sec-title">How I <span>Think</span></h2>
   </div>
-  <div class="vision-wrap">
+  <div class="vision-wrap" id="visionWrap">
     <div class="vision-line reveal">I don't wait for the perfect setup.</div>
     <div class="vision-line accent reveal">I start with what I have.</div>
     <div class="vision-line reveal">I don't just write code.</div>
@@ -627,6 +633,82 @@
       }
     })();
   }
+
+  // Admin-managed content: text, images, qualifications, capabilities
+  (async function loadManagedContent(){
+    let content={},images={},quals=[],tools=[];
+    try{
+      const res=await Promise.all([
+        supabaseClient.from('site_content').select('*'),
+        supabaseClient.from('site_images').select('*'),
+        supabaseClient.from('qualifications').select('*').order('sort_order',{ascending:true}),
+        supabaseClient.from('capabilities').select('*').order('sort_order',{ascending:true})
+      ]);
+      (res[0].data||[]).forEach(r=>content[r.key]=r.value||'');
+      (res[1].data||[]).forEach(r=>images[r.key]=r.url||'');
+      quals=res[2].data||[];
+      tools=res[3].data||[];
+    }catch(err){
+      console.warn('Admin content unavailable, using defaults.');
+      return;
+    }
+    const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+    const lines=s=>String(s||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+
+    if(content.hero_tag){
+      const el=document.getElementById('heroTag');
+      if(el)el.innerHTML=md(content.hero_tag);
+    }
+    if(content.about_body){
+      const el=document.getElementById('aboutCopy');
+      if(el)el.innerHTML=lines(content.about_body).map(p=>`<p>${md(p)}</p>`).join('');
+    }
+    if(content.journey_body){
+      const el=document.getElementById('journeyTimeline');
+      if(el){
+        el.innerHTML=lines(content.journey_body).map(item=>{
+          const parts=item.split('|');
+          const title=parts.shift().trim();
+          const desc=parts.join('|').trim();
+          return `<div class="tl-item reveal in"><div class="dot"></div><b>${md(title)}</b>${desc?`<span>${md(desc)}</span>`:''}</div>`;
+        }).join('');
+      }
+    }
+    if(content.vision_body){
+      const el=document.getElementById('visionWrap');
+      if(el)el.innerHTML=lines(content.vision_body).map((l,i)=>`<div class="vision-line reveal in${i%2?' accent':''}">${md(l)}</div>`).join('');
+    }
+    if(images.hero){
+      const img=document.querySelector('#heroPhoto img');
+      if(img)img.src=images.hero;
+    }
+    if(images.about){
+      const img=document.querySelector('#aboutPhoto img');
+      if(img)img.src=images.about;
+    }
+    if(images.journey){
+      const wrap=document.getElementById('journeyPhoto');
+      const img=document.getElementById('journeyPhotoImg');
+      if(wrap&&img){img.src=images.journey;wrap.style.display='block';wrap.classList.add('in');}
+    }
+    if(quals.length){
+      const el=document.getElementById('eduGrid');
+      if(el)el.innerHTML=quals.map(q=>{
+        const tag=q.year||q.degree;
+        return `<div class="edu-card reveal in">
+          <span class="edu-tag">${esc(tag)}</span>
+          <h3>${esc(q.degree)}</h3>
+          <div class="school">${esc(q.institute||'')}</div>
+          ${q.score?`<b class="marks">${esc(q.score)}</b><span class="lbl">Score</span>`:''}
+        </div>`;
+      }).join('');
+    }
+    if(tools.length){
+      const el=document.getElementById('capGrid');
+      if(el)el.innerHTML=tools.map(t=>`<div class="cap reveal in"><div class="ic">${esc(t.icon||'⚡')}</div><span>${esc(t.name)}</span></div>`).join('');
+    }
+  })();
 
   // Count-up stats
   const stats=[], statIO=new IntersectionObserver(entries=>{

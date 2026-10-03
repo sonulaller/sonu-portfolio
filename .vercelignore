@@ -1,5 +1,8 @@
 server
 setup.sql
 seed.sql
+admin-setup.sql
+admin-fix.sql
+reset-email-template.html
 .git
 .gitignore

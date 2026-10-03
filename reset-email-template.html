@@ -1,0 +1,7 @@
+<h2>Reset your password</h2>
+<p>Hi {{ .Email }},</p>
+<p>Aapke admin panel ke liye reset code:</p>
+<h2 style="letter-spacing:6px;">{{ .Token }}</h2>
+<p>Ya direct link kholo:</p>
+<p><a href="{{ .ConfirmationURL }}">Open reset link</a></p>
+<p style="color:#888;">Ye code expire ho jayega. Agar aapne ye request nahi ki thi to is email ko ignore kar do.</p>

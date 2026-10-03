@@ -44,7 +44,11 @@
   .login-btn{width:100%;background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;padding:14px;
     border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;transition:.25s;font-family:inherit;}
   .login-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
-  .login-err{color:var(--red);font-size:13px;margin-top:12px;min-height:18px;}
+  .login-btn[disabled]{opacity:.6;cursor:not-allowed;}
+  .login-err{color:var(--red);font-size:13px;margin-top:12px;min-height:18px;text-align:left;}
+  .login-alt{margin-top:14px;font-size:12.5px;}
+  .linkish{background:none;border:none;color:var(--cyan);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;
+    text-decoration:underline;padding:0;}
   .back-link{display:inline-block;margin-top:20px;color:var(--muted);font-size:12.5px;text-decoration:none;}
   .back-link:hover{color:var(--cyan);}
 
@@ -59,8 +63,10 @@
     color:var(--muted);text-decoration:none;cursor:pointer;background:none;font-family:inherit;transition:.25s;}
   .head-actions .user-email{padding:8px 2px;color:#dbe3ee;font-size:12.5px;font-weight:600;}
   .head-actions a:hover,.head-actions button:hover{border-color:var(--cyan);color:var(--cyan);}
-  .tabs{display:flex;gap:6px;border:1px solid var(--line);border-radius:12px;padding:5px;background:var(--bg2);}
-  .tab{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:.25s;
+  .tabs{display:flex;gap:6px;border:1px solid var(--line);border-radius:12px;padding:5px;background:var(--bg2);
+    max-width:100%;overflow-x:auto;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:.25s;
     border:none;background:none;font-family:inherit;white-space:nowrap;}
   .tab:hover{color:#fff;}
   .tab.active{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;box-shadow:0 6px 20px rgba(34,211,238,.25);}
@@ -71,12 +77,27 @@
   .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:14px;flex-wrap:wrap;}
   .panel-head h2{font-size:26px;font-weight:700;}
   .panel-head h2 span{background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-  .add-btn{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;padding:12px 22px;border-radius:10px;
-    font-weight:700;font-size:14px;cursor:pointer;transition:.25s;font-family:inherit;}
-  .add-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
   .status{font-size:13px;color:var(--muted);font-weight:600;}
   .status.ok{color:var(--cyan);}
   .status.err{color:var(--red);}
+  .sub-head{font-size:15px;font-weight:700;color:#dbe3ee;margin:30px 0 14px;display:flex;align-items:center;gap:10px;}
+  .sub-head::before{content:"";width:16px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--cyan),var(--violet));}
+
+  /* BUTTONS */
+  .btn{border:1px solid var(--line);background:none;color:#dbe3ee;padding:11px 18px;border-radius:10px;font-size:13px;
+    font-weight:700;cursor:pointer;font-family:inherit;transition:.25s;}
+  .btn:hover{border-color:var(--cyan);color:var(--cyan);}
+  .btn.primary{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;}
+  .btn.primary:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
+  .btn.danger{border-color:rgba(248,113,113,.45);color:var(--red);}
+  .btn.danger:hover{background:rgba(248,113,113,.12);color:var(--red);}
+  .btn.ghost{border-color:rgba(34,211,238,.45);color:#a5f3fc;}
+  .btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
+  .btn.busy{opacity:.7;pointer-events:none;}
+  .add-btn{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;padding:12px 22px;border-radius:10px;
+    font-weight:700;font-size:14px;cursor:pointer;transition:.25s;font-family:inherit;}
+  .add-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 12px 34px rgba(34,211,238,.3);}
+  .add-btn[disabled]{opacity:.6;cursor:not-allowed;}
 
   /* CARDS */
   .card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--surface);backdrop-filter:blur(8px);margin-bottom:14px;}
@@ -99,6 +120,71 @@
   .empty .big{font-size:38px;display:block;margin-bottom:12px;}
   .loading{text-align:center;color:var(--muted);padding:40px;}
 
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+  .stat{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface);}
+  .stat b{display:block;font-family:'Space Grotesk',sans-serif;font-size:26px;margin-bottom:4px;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat span{color:var(--muted);font-size:11.5px;font-weight:600;}
+
+  /* SPLIT LAYOUT */
+  .split{display:grid;grid-template-columns:330px 1fr;gap:20px;align-items:start;}
+  .side{position:sticky;top:132px;}
+  .side .card{padding:20px;}
+
+  /* FIELDS */
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:7px;color:#dbe3ee;}
+  .field input,.field textarea,.field select{width:100%;background:#0a101c;border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;color:#fff;font-size:14px;font-family:inherit;transition:.25s;}
+  .field textarea{resize:vertical;min-height:96px;line-height:1.6;}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15);}
+  .hint{color:var(--muted);font-size:11.5px;margin-top:6px;line-height:1.6;}
+  .edit-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .edit-row input{flex:1;min-width:120px;background:#0a101c;border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+    color:#fff;font-size:13px;font-family:inherit;}
+  .edit-row input:focus{outline:none;border-color:var(--cyan);}
+
+  /* IMAGES */
+  .img-card{border:1px solid var(--line);border-radius:16px;padding:20px;background:var(--surface);margin-bottom:16px;}
+  .img-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+  .img-head h3{font-size:17px;font-weight:700;}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--muted);}
+  .preview{width:100%;max-width:430px;aspect-ratio:16/10;border-radius:14px;border:1px dashed var(--line);background:#070b13;
+    display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;overflow:hidden;margin-bottom:14px;
+    background-size:cover;background-position:center;}
+  .preview img{width:100%;height:100%;object-fit:cover;display:block;}
+  .row-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .text-edit{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;}
+
+  /* CHIPS */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;}
+  .chip{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.07);
+    color:#a5f3fc;padding:9px 15px;border-radius:30px;font-size:13px;font-weight:700;}
+  .chip em{font-style:normal;font-size:15px;}
+  .chip button{background:none;border:none;color:#a5f3fc;cursor:pointer;font-size:16px;line-height:1;padding:0 2px;font-family:inherit;}
+  .chip button:hover{color:var(--red);}
+
+  /* SETTINGS */
+  .sec-card{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--surface);margin-bottom:16px;}
+  .sec-card h3{font-size:18px;margin-bottom:6px;}
+  .sec-card p.desc{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.7;}
+  .pw-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .note{border:1px solid rgba(34,211,238,.28);background:rgba(34,211,238,.06);border-radius:12px;padding:14px 16px;
+    color:#bcd0e2;font-size:12.5px;line-height:1.7;}
+  .steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .step{border:1px solid var(--line);border-radius:20px;padding:5px 14px;font-size:11.5px;font-weight:700;color:var(--muted);}
+  .step.active{border-color:var(--cyan);color:#a5f3fc;background:rgba(34,211,238,.08);}
+  .hidden{display:none !important;}
+
+  /* TOAST */
+  #toasts{position:fixed;right:18px;bottom:18px;z-index:300;display:flex;flex-direction:column;gap:10px;max-width:340px;}
+  .toast{border:1px solid var(--line);border-radius:12px;padding:13px 16px;background:rgba(10,15,28,.97);color:#dbe3ee;
+    font-size:13px;line-height:1.5;box-shadow:0 20px 50px rgba(0,0,0,.5);animation:tin .25s ease;}
+  .toast.ok{border-color:rgba(34,211,238,.5);}
+  .toast.err{border-color:rgba(248,113,113,.5);}
+  @keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
   /* MODAL */
   .modal{position:fixed;inset:0;z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow-y:auto;
     background:rgba(3,5,9,.75);backdrop-filter:blur(6px);}
@@ -106,30 +192,35 @@
   .modal-box{border:1px solid var(--line);border-radius:18px;padding:30px;width:100%;max-width:560px;background:var(--bg2);
     box-shadow:0 40px 100px rgba(0,0,0,.6);margin:auto 0;}
   .modal-box h3{font-size:20px;font-weight:700;margin-bottom:24px;}
-  .modal .f{margin-bottom:16px;}
-  .modal label{display:block;font-size:12.5px;font-weight:600;margin-bottom:7px;color:#dbe3ee;}
-  .modal input,.modal textarea,.modal select{width:100%;background:#0a101c;border:1px solid var(--line);border-radius:10px;padding:12px 14px;
-    color:#fff;font-size:14px;font-family:inherit;transition:.25s;}
-  .modal textarea{resize:vertical;min-height:100px;}
-  .modal input:focus,.modal textarea:focus,.modal select:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15);}
-  .modal .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
   .modal-actions{display:flex;gap:10px;margin-top:22px;}
   .modal-actions button{flex:1;padding:13px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;transition:.25s;font-family:inherit;}
   .btn-save{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#03171d;border:none;}
   .btn-save:hover{opacity:.9;box-shadow:0 10px 30px rgba(34,211,238,.3);}
   .btn-cancel{border:1px solid var(--line);background:none;color:var(--muted);}
-  .btn-cancel:hover{border-color:var(--muted);color:#fff;}
+  .btn-cancel:hover{color:#fff;border-color:var(--muted);}
 
+  @media(max-width:900px){
+    .split{grid-template-columns:1fr;}
+    .side{position:static;}
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .pw-row{grid-template-columns:1fr;}
+  }
   @media(max-width:640px){
-    .tabs{width:100%;justify-content:stretch;}
-    .tab{flex:1;padding:10px 8px;font-size:12px;}
+    .tabs{width:100%;}
+    .tab{padding:9px 12px;font-size:12px;}
     .panel-head{flex-direction:column;align-items:stretch;}
-    .modal .row{grid-template-columns:1fr;}
+    .head-in{padding:14px 5vw;}
+    main{padding-top:170px;}
+    .card-actions .btn{padding:9px 12px;font-size:11.5px;}
+    #toasts{left:14px;right:14px;max-width:none;}
   }
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
+
+<!-- TOASTS -->
+<div id="toasts"></div>
 
 <!-- LOGIN -->
 <div id="loginScreen">
@@ -145,7 +236,49 @@
       <button class="login-btn" type="submit">Login with Supabase</button>
       <div class="login-err" id="loginErr" role="alert"></div>
     </form>
+    <div class="login-alt"><button class="linkish" id="forgotLink" type="button">Forgot Password?</button></div>
     <a class="back-link" href="/">← Back to portfolio</a>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal" id="forgotModal">
+  <div class="modal-box">
+    <h3>Reset Password</h3>
+    <div class="steps">
+      <span class="step active" id="fs1">1 · Email</span>
+      <span class="step" id="fs2">2 · Code</span>
+      <span class="step" id="fs3">3 · New Password</span>
+    </div>
+    <div id="forgotStep1">
+      <div class="field">
+        <label>Admin email</label>
+        <input type="email" id="fpEmail" placeholder="you@example.com">
+      </div>
+      <p class="hint">Reset code isi email par bhejenge. Email mat badalna — wahi daalna hai jo admin login use karta hai.</p>
+    </div>
+    <div id="forgotStep2" class="hidden">
+      <div class="field">
+        <label>Reset code (email se aaya)</label>
+        <input type="text" id="fpCode" placeholder="123456" inputmode="numeric" autocomplete="one-time-code">
+      </div>
+      <p class="hint">Email me aaya 6-digit code yahan daalo.</p>
+    </div>
+    <div id="forgotStep3" class="hidden">
+      <div class="field">
+        <label>New password</label>
+        <input type="password" id="fpNew" placeholder="Minimum 6 characters" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label>Confirm password</label>
+        <input type="password" id="fpConfirm" placeholder="Repeat new password" autocomplete="new-password">
+      </div>
+    </div>
+    <div class="login-err" id="forgotErr"></div>
+    <div class="modal-actions">
+      <button class="btn-save" id="forgotNext" type="button">Send reset code</button>
+      <button class="btn-cancel" type="button" onclick="closeModal('forgotModal')">Close</button>
+    </div>
   </div>
 </div>
 
@@ -156,10 +289,14 @@
       <a class="logo" href="/"><b>SONU</b>.LALLER · ADMIN</a>
       <div class="head-actions">
         <span class="user-email" id="adminEmail"></span>
-        <div class="tabs">
-          <button class="tab active" data-panel="messages">Messages</button>
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-panel="dashboard">Dashboard</button>
           <button class="tab" data-panel="projects">Projects</button>
-          <button class="tab" data-panel="blogs">Blogs</button>
+          <button class="tab" data-panel="images">Images</button>
+          <button class="tab" data-panel="qualifications">My Qualifications</button>
+          <button class="tab" data-panel="capabilities">My Capabilities</button>
+          <button class="tab" data-panel="vision">My Vision</button>
+          <button class="tab" data-panel="settings">Settings</button>
         </div>
         <a href="/">View Site</a>
         <button id="logoutBtn">Logout</button>
@@ -168,53 +305,157 @@
   </header>
 
   <main>
-    <div class="panel active" id="panel-messages">
-      <div class="panel-head">
-        <h2>Contact <span>Messages</span></h2>
-        <span class="status" id="msgStatus"></span>
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="panel-head"><h2>Dashboard <span>Overview</span></h2></div>
+      <div class="stats">
+        <div class="stat"><b id="statMessages">0</b><span>Contact Messages</span></div>
+        <div class="stat"><b id="statProjects">0</b><span>Projects</span></div>
+        <div class="stat"><b id="statBlogs">0</b><span>Blog Posts</span></div>
+        <div class="stat"><b id="statTools">0</b><span>Tools / Capabilities</span></div>
       </div>
+
+      <div class="sub-head">Contact Messages</div>
+      <div class="status" id="msgStatus" style="margin-bottom:14px;"></div>
       <div id="messagesList"></div>
-    </div>
 
-    <div class="panel" id="panel-projects">
+      <div class="sub-head">Blog Posts</div>
       <div class="panel-head">
-        <h2>Manage <span>Projects</span></h2>
-        <button class="add-btn" onclick="openProjectModal()">+ Add Project</button>
+        <span class="status" id="blogStatus"></span>
+        <button class="add-btn" id="addBlogBtn" type="button">+ Add Blog</button>
       </div>
-      <div class="status" id="projStatus" style="margin-bottom:14px;"></div>
-      <div id="projectsList"></div>
-    </div>
-
-    <div class="panel" id="panel-blogs">
-      <div class="panel-head">
-        <h2>Manage <span>Blogs</span></h2>
-        <button class="add-btn" onclick="openBlogModal()">+ Add Blog</button>
-      </div>
-      <div class="status" id="blogStatus" style="margin-bottom:14px;"></div>
       <div id="blogsList"></div>
     </div>
-  </main>
-</div>
 
-<!-- PROJECT MODAL -->
-<div class="modal" id="projModal">
-  <div class="modal-box">
-    <h3 id="projModalTitle">Add Project</h3>
-    <form id="projForm">
-      <div class="f"><label>Title *</label><input type="text" id="pTitle" required placeholder="e.g. NLSP School Website"></div>
-      <div class="f"><label>Description</label><textarea id="pDesc" placeholder="Describe the project"></textarea></div>
-      <div class="f"><label>Tech Stack (comma separated)</label><input type="text" id="pTech" placeholder="React, Node.js, Vercel"></div>
-      <div class="row">
-        <div class="f"><label>Live/GitHub Link</label><input type="url" id="pLink" placeholder="https://..."></div>
-        <div class="f"><label>Emoji / Icon</label><input type="text" id="pEmoji" placeholder="🚀" maxlength="4"></div>
+    <!-- PROJECTS -->
+    <div class="panel" id="panel-projects">
+      <div class="panel-head"><h2>Manage <span>Projects</span></h2></div>
+      <div class="split">
+        <div class="side">
+          <div class="card">
+            <h3 style="font-size:16px;margin-bottom:14px;">Add Project</h3>
+            <form id="projectForm">
+              <div class="field"><label>Title *</label><input type="text" id="pTitle" required placeholder="e.g. NLSP School Website"></div>
+              <div class="field"><label>Description</label><textarea id="pDesc" placeholder="Describe the project"></textarea></div>
+              <div class="field"><label>Link</label><input type="url" id="pLink" placeholder="https://..."></div>
+              <div class="field"><label>Tech Stack (comma separated)</label><input type="text" id="pTech" placeholder="React, Node.js"></div>
+              <div class="field"><label>Emoji / Icon</label><input type="text" id="pEmoji" placeholder="🚀" maxlength="4"></div>
+              <button class="add-btn" id="projectSubmit" type="submit" style="width:100%;">Save Project</button>
+              <p class="hint">Title, description aur link ke saath project turant portfolio me dikh jayega.</p>
+            </form>
+          </div>
+        </div>
+        <div>
+          <div class="status" id="projStatus" style="margin-bottom:14px;"></div>
+          <div id="projectsList"></div>
+        </div>
       </div>
-      <div class="f"><label>Tag</label><input type="text" id="pTag" placeholder="Flagship"></div>
-      <div class="modal-actions">
-        <button class="btn-save" type="submit">Save Project</button>
-        <button class="btn-cancel" type="button" onclick="closeModal('projModal')">Cancel</button>
+    </div>
+
+    <!-- IMAGES -->
+    <div class="panel" id="panel-images">
+      <div class="panel-head"><h2>Images &amp; <span>Text</span></h2><span class="status">Hero · About Me · My Journey</span></div>
+      <div id="imagesWrap"></div>
+    </div>
+
+    <!-- QUALIFICATIONS -->
+    <div class="panel" id="panel-qualifications">
+      <div class="panel-head"><h2>My <span>Qualifications</span></h2></div>
+      <div class="split">
+        <div class="side">
+          <div class="card">
+            <h3 style="font-size:16px;margin-bottom:14px;">Add Qualification</h3>
+            <form id="qualForm">
+              <div class="field"><label>Degree / Course *</label><input type="text" id="qDegree" required placeholder="e.g. 12th Class"></div>
+              <div class="field"><label>Institute / School</label><input type="text" id="qInstitute" placeholder="e.g. HBSE"></div>
+              <div class="field"><label>Year</label><input type="text" id="qYear" placeholder="e.g. 2024"></div>
+              <div class="field"><label>Score / Percentage (optional)</label><input type="text" id="qScore" placeholder="e.g. 85%"></div>
+              <button class="add-btn" id="qualSubmit" type="submit" style="width:100%;">Save Qualification</button>
+            </form>
+          </div>
+        </div>
+        <div>
+          <div class="status" id="qualStatus" style="margin-bottom:14px;"></div>
+          <div id="qualsList"></div>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
+
+    <!-- CAPABILITIES -->
+    <div class="panel" id="panel-capabilities">
+      <div class="panel-head"><h2>My <span>Capabilities</span></h2></div>
+      <div class="card">
+        <form id="toolForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+          <div class="field" style="flex:1;min-width:180px;margin:0;">
+            <label>Add Tool / Skill</label>
+            <input type="text" id="tName" placeholder="e.g. React" required>
+          </div>
+          <div class="field" style="width:110px;margin:0;">
+            <label>Icon</label>
+            <input type="text" id="tIcon" placeholder="⚛️" maxlength="4">
+          </div>
+          <button class="add-btn" id="toolSubmit" type="submit">+ Add Tool</button>
+        </form>
+      </div>
+      <div class="sub-head">Your Tools</div>
+      <div class="status" id="toolStatus" style="margin-bottom:14px;"></div>
+      <div class="chips" id="toolsChips"></div>
+    </div>
+
+    <!-- VISION -->
+    <div class="panel" id="panel-vision">
+      <div class="panel-head"><h2>My <span>Vision</span></h2></div>
+      <div class="card">
+        <h3 style="font-size:16px;margin-bottom:6px;">Vision Lines</h3>
+        <p class="hint" style="margin-bottom:14px;">Har line portfolio me ek line banegi. Example: <b>I build, break, and build again.</b></p>
+        <div class="field">
+          <textarea id="visionText" style="min-height:190px;" placeholder="I don't wait for the perfect setup.&#10;I start with what I have."></textarea>
+        </div>
+        <div class="row-btns">
+          <button class="btn ghost" id="visionEdit" type="button">Edit Text</button>
+          <button class="btn primary" id="visionSave" type="button" disabled>Save Vision</button>
+        </div>
+        <p class="status" id="visionStatus" style="margin-top:12px;"></p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="panel-head"><h2>Account <span>Settings</span></h2></div>
+
+      <div class="sec-card">
+        <h3>Update Password</h3>
+        <p class="desc">Current password sahi hona zaroori hai, aur new password confirm password se match hona chahiye (kam se kam 6 characters).</p>
+        <form id="pwForm">
+          <div class="pw-row">
+            <div class="field"><label>Current password</label><input type="password" id="pwCurrent" autocomplete="current-password" required></div>
+            <div class="field"><label>New password</label><input type="password" id="pwNew" autocomplete="new-password" required></div>
+            <div class="field"><label>Confirm new password</label><input type="password" id="pwConfirm" autocomplete="new-password" required></div>
+          </div>
+          <div class="row-btns">
+            <button class="btn primary" id="pwSubmit" type="submit">Update Password</button>
+          </div>
+          <p class="status" id="pwStatus" style="margin-top:12px;"></p>
+        </form>
+      </div>
+
+      <div class="sec-card">
+        <h3>Forgot Password</h3>
+        <p class="desc">Aapke registered admin email par reset code bheja jayega. Code sahi hoga tabhi naya password set hoga.</p>
+        <div class="pw-row" style="grid-template-columns:1fr auto;align-items:end;">
+          <div class="field" style="margin:0;"><label>Admin email</label><input type="email" id="fpEmail2" placeholder="you@example.com"></div>
+          <button class="btn ghost" id="fpSend" type="button">Send reset code</button>
+        </div>
+        <p class="status" id="fpStatus" style="margin-top:12px;"></p>
+      </div>
+
+      <div class="sec-card">
+        <h3>Security</h3>
+        <p class="desc">Password kabhi plain text me store nahi hota — Supabase Auth use hota hai jo password ko server side hash kar ke rakhta hai. Reset code bhi seedha Supabase verify karta hai, hum usse kabhi database me likhte hi nahi.</p>
+        <div class="note">Tips: 12+ characters ka strong password use karo, aur kisi ke saath share mat karo.</div>
+      </div>
+    </div>
+  </main>
 </div>
 
 <!-- BLOG MODAL -->
@@ -222,343 +463,21 @@
   <div class="modal-box">
     <h3 id="blogModalTitle">Add Blog</h3>
     <form id="blogForm">
-      <div class="f"><label>Title *</label><input type="text" id="bTitle" required placeholder="e.g. How I built a school website"></div>
-      <div class="f"><label>Content</label><textarea id="bContent" placeholder="Write your blog content here..."></textarea></div>
-      <div class="row">
-        <div class="f"><label>Category</label><input type="text" id="bCat" placeholder="Web Dev"></div>
-        <div class="f"><label>Cover Image URL</label><input type="url" id="bImage" placeholder="https://... (optional)"></div>
+      <div class="field"><label>Title *</label><input type="text" id="bTitle" required placeholder="e.g. How I built a school website"></div>
+      <div class="field"><label>Content</label><textarea id="bContent" placeholder="Write your blog content here..."></textarea></div>
+      <div class="pw-row">
+        <div class="field"><label>Category</label><input type="text" id="bCat" placeholder="Web Dev"></div>
+        <div class="field"><label>Cover Image URL</label><input type="url" id="bImage" placeholder="https://... (optional)"></div>
       </div>
-      <div class="f"><label>Emoji / Icon</label><input type="text" id="bEmoji" placeholder="📝" maxlength="4"></div>
+      <div class="field"><label>Emoji / Icon</label><input type="text" id="bEmoji" placeholder="📝" maxlength="4"></div>
       <div class="modal-actions">
-        <button class="btn-save" type="submit">Save Blog</button>
+        <button class="btn-save" type="submit" id="blogSubmit">Save Blog</button>
         <button class="btn-cancel" type="button" onclick="closeModal('blogModal')">Cancel</button>
       </div>
     </form>
   </div>
 </div>
 
-<script>
-  const SUPABASE_URL = 'https://komhdriknaqunyxblvsw.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_JyZ9yIDLmlMUqogq7UjhHw_Sv-XOpqI';
-  const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
-  const loginScreen = document.getElementById('loginScreen');
-  const app = document.getElementById('app');
-  const loginForm = document.getElementById('loginForm');
-  const loginButton = loginForm.querySelector('button[type="submit"]');
-  const loginError = document.getElementById('loginErr');
-  let activeUserId = '';
-
-  function setStatus(id, text, ok){const el=document.getElementById(id);
-    el.textContent=text;el.className='status '+(ok?'ok':'err');}
-  function esc(s){const d=document.createElement('div');d.textContent=(s==null?'':String(s));return d.innerHTML;}
-  function safeUrl(value){
-    if(!value)return '';
-    try{
-      const url=new URL(value);
-      return ['http:','https:'].includes(url.protocol)?esc(url.href):'';
-    }catch(err){return '';}
-  }
-  const projectCache=new Map(), blogCache=new Map();
-  function isAdmin(user){return Boolean(user&&user.app_metadata&&user.app_metadata.role==='admin');}
-  function setLoginError(message){loginError.textContent=message||'';}
-  function setLoginLoading(loading){
-    loginButton.disabled=loading;
-    loginButton.textContent=loading?'Logging in…':'Login with Supabase';
-  }
-  function showLogin(message){
-    activeUserId='';
-    loginScreen.style.display='flex';
-    app.style.display='none';
-    document.getElementById('loginPass').value='';
-    setLoginError(message);
-  }
-  function showApp(user){
-    if(!isAdmin(user))return;
-    activeUserId=user.id;
-    document.getElementById('adminEmail').textContent=user.email||'';
-    loginScreen.style.display='none';
-    app.style.display='block';
-    loadAll();
-  }
-
-  loginForm.addEventListener('submit',async function(e){
-    e.preventDefault();
-    if(!sb)return;
-    setLoginLoading(true);
-    setLoginError('');
-    const email=document.getElementById('loginEmail').value.trim();
-    const password=document.getElementById('loginPass').value;
-    try{
-      const {data,error}=await sb.auth.signInWithPassword({email,password});
-      if(error)throw error;
-      if(!isAdmin(data.user)){
-        setLoginError('This Supabase account does not have the admin role.');
-        await sb.auth.signOut();
-        return;
-      }
-      showApp(data.user);
-    }catch(err){
-      setLoginError(err.message||'Unable to log in.');
-    }finally{
-      setLoginLoading(false);
-    }
-  });
-
-  document.getElementById('logoutBtn').addEventListener('click',async function(){
-    if(sb)await sb.auth.signOut();
-    showLogin();
-  });
-
-  async function initializeAuth(){
-    if(!sb){
-      loginButton.disabled=true;
-      setLoginError('Supabase library could not load. Check your internet connection and refresh.');
-      return;
-    }
-    const {data,error}=await sb.auth.getSession();
-    if(error){
-      setLoginError('Unable to connect to Supabase: '+error.message);
-      return;
-    }
-    if(data.session){
-      if(isAdmin(data.session.user))showApp(data.session.user);
-      else{
-        setLoginError('This Supabase account does not have the admin role.');
-        await sb.auth.signOut();
-      }
-    }else showLogin();
-    sb.auth.onAuthStateChange((event,session)=>{
-      setTimeout(()=>{
-        if(event==='SIGNED_OUT'||!session)showLogin(loginError.textContent);
-        else if(!activeUserId)showApp(session.user);
-      },0);
-    });
-  }
-
-  initializeAuth();
-
-  // ---- TABS ----
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    this.classList.add('active');
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('panel-'+this.dataset.panel).classList.add('active');
-  }));
-
-  // ---- MODALS ----
-  function openModal(id){document.getElementById(id).classList.add('open');}
-  function closeModal(id){document.getElementById(id).classList.remove('open');}
-  document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',function(e){
-    if(e.target===this)this.classList.remove('open');
-  }));
-  document.getElementById('projectsList').addEventListener('click',function(e){
-    const button=e.target.closest('button[data-action]');
-    if(!button)return;
-    const project=projectCache.get(button.dataset.id);
-    if(!project)return;
-    if(button.dataset.action==='edit-project')window.editProject(project);
-    if(button.dataset.action==='delete-project')window.deleteProject(project.id);
-  });
-  document.getElementById('blogsList').addEventListener('click',function(e){
-    const button=e.target.closest('button[data-action]');
-    if(!button)return;
-    const blog=blogCache.get(button.dataset.id);
-    if(!blog)return;
-    if(button.dataset.action==='edit-blog')window.editBlog(blog);
-    if(button.dataset.action==='delete-blog')window.deleteBlog(blog.id);
-  });
-
-  // ---- LOAD ALL ----
-  async function loadAll(){await Promise.all([loadMessages(),loadProjects(),loadBlogs()]);}
-
-  // ---- MESSAGES (read-only) ----
-  async function loadMessages(){
-    const list=document.getElementById('messagesList');
-    setStatus('msgStatus','Loading messages...');list.innerHTML='';
-    try{
-      const {data,error}=await sb.from('messages').select('*').order('created_at',{ascending:false});
-      if(error)throw error;
-      setStatus('msgStatus',data.length+' message(s)',true);
-      if(!data.length){list.innerHTML=emptyState('📭','No messages yet. Contact form submissions will appear here.');return;}
-      list.innerHTML=data.map(m=>`
-        <div class="card">
-          <div class="msg-meta">
-            <span class="msg-chip">${esc(m.name)}</span>
-            <span class="msg-chip">${esc(m.email)}</span>
-            ${m.created_at?`<span class="msg-date">${new Date(m.created_at).toLocaleString()}</span>`:''}
-          </div>
-          <p class="msg-body">${esc(m.message)}</p>
-        </div>`).join('');
-    }catch(err){
-      setStatus('msgStatus','Failed to load messages: '+err.message,false);
-      list.innerHTML=emptyState('⚠️','Could not load messages. Check setup.sql was run in Supabase.');
-    }
-  }
-
-  // ---- PROJECTS (CRUD) ----
-  async function loadProjects(){
-    const list=document.getElementById('projectsList');
-    setStatus('projStatus','Loading projects...');list.innerHTML='';
-    try{
-      const {data,error}=await sb.from('projects').select('*').order('created_at',{ascending:false});
-      if(error)throw error;
-      setStatus('projStatus',data.length+' project(s)',true);
-      if(!data.length){list.innerHTML=emptyState('📦','No projects yet. Click "Add Project" to create one.');return;}
-      projectCache.clear();
-      list.innerHTML=data.map(p=>{
-        projectCache.set(p.id,p);
-        return `
-        <div class="card">
-          <div class="card-top">
-            <div>
-              <h3>${esc(p.image_emoji||'🚀')} ${esc(p.title)}</h3>
-              <div class="sub">${p.tag?esc(p.tag):''}</div>
-            </div>
-            <div class="card-actions">
-              <button class="edit" type="button" data-action="edit-project" data-id="${esc(p.id)}">Edit</button>
-              <button class="del" type="button" data-action="delete-project" data-id="${esc(p.id)}">Delete</button>
-            </div>
-          </div>
-          <p class="msg-body" style="margin-top:10px;">${esc(p.description||'')}</p>
-          ${p.tech_stack&&p.tech_stack.length?`<div class="stack-pills">${p.tech_stack.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}
-          ${safeUrl(p.live_link)?`<a class="live" href="${safeUrl(p.live_link)}" target="_blank" rel="noopener">Open link →</a>`:''}
-        </div>`;
-      }).join('');
-    }catch(err){
-      setStatus('projStatus','Failed to load projects: '+err.message,false);
-      list.innerHTML=emptyState('⚠️','Could not load projects from Supabase.');
-    }
-  }
-
-  window.openProjectModal=function(){
-    document.getElementById('projModalTitle').textContent='Add Project';
-    document.getElementById('projForm').reset();
-    document.getElementById('pTitle').dataset.id='';
-    openModal('projModal');
-  };
-
-  window.editProject=function(p){
-    document.getElementById('projModalTitle').textContent='Edit Project';
-    document.getElementById('pTitle').value=p.title||'';
-    document.getElementById('pTitle').dataset.id=p.id;
-    document.getElementById('pDesc').value=p.description||'';
-    document.getElementById('pTech').value=(p.tech_stack||[]).join(', ');
-    document.getElementById('pLink').value=p.live_link||'';
-    document.getElementById('pEmoji').value=p.image_emoji||'';
-    document.getElementById('pTag').value=p.tag||'';
-    openModal('projModal');
-  };
-
-  document.getElementById('projForm').addEventListener('submit',async function(e){
-    e.preventDefault();
-    const id=document.getElementById('pTitle').dataset.id;
-    const tech=document.getElementById('pTech').value.split(',').map(t=>t.trim()).filter(Boolean);
-    const payload={
-      title:document.getElementById('pTitle').value.trim(),
-      description:document.getElementById('pDesc').value.trim(),
-      tech_stack:tech,
-      live_link:document.getElementById('pLink').value.trim(),
-      image_emoji:document.getElementById('pEmoji').value.trim()||'🚀',
-      tag:document.getElementById('pTag').value.trim()
-    };
-    try{
-      const {error}=id
-        ? await sb.from('projects').update(payload).eq('id',id)
-        : await sb.from('projects').insert(payload);
-      if(error)throw error;
-      closeModal('projModal');await loadProjects();
-    }catch(err){alert('Save failed: '+err.message);}
-  });
-
-  window.deleteProject=async function(id){
-    if(!confirm('Delete this project?'))return;
-    try{
-      const {error}=await sb.from('projects').delete().eq('id',id);
-      if(error)throw error;
-      await loadProjects();
-    }catch(err){alert('Delete failed: '+err.message);}
-  };
-
-  // ---- BLOGS (CRUD) ----
-  async function loadBlogs(){
-    const list=document.getElementById('blogsList');
-    setStatus('blogStatus','Loading blogs...');list.innerHTML='';
-    try{
-      const {data,error}=await sb.from('blogs').select('*').order('created_at',{ascending:false});
-      if(error)throw error;
-      setStatus('blogStatus',data.length+' blog post(s)',true);
-      if(!data.length){list.innerHTML=emptyState('📝','No blogs yet. Click "Add Blog" to create one.');return;}
-      blogCache.clear();
-      list.innerHTML=data.map(b=>{
-        blogCache.set(b.id,b);
-        return `
-        <div class="card">
-          <div class="card-top">
-            <div>
-              <h3>${esc(b.emoji||'📝')} ${esc(b.title)}</h3>
-              <div class="sub">${b.category?esc(b.category):''}${safeUrl(b.cover_image)?' · <a href="'+safeUrl(b.cover_image)+'" target="_blank" rel="noopener">Cover</a>':''}</div>
-            </div>
-            <div class="card-actions">
-              <button class="edit" type="button" data-action="edit-blog" data-id="${esc(b.id)}">Edit</button>
-              <button class="del" type="button" data-action="delete-blog" data-id="${esc(b.id)}">Delete</button>
-            </div>
-          </div>
-          <p class="msg-body" style="margin-top:10px;max-height:120px;overflow:hidden;">${esc(b.content||'')}</p>
-        </div>`;
-      }).join('');
-    }catch(err){
-      setStatus('blogStatus','Failed to load blogs: '+err.message,false);
-      list.innerHTML=emptyState('⚠️','Could not load blogs from Supabase.');
-    }
-  }
-
-  window.openBlogModal=function(){
-    document.getElementById('blogModalTitle').textContent='Add Blog';
-    document.getElementById('blogForm').reset();
-    document.getElementById('bTitle').dataset.id='';
-    openModal('blogModal');
-  };
-
-  window.editBlog=function(b){
-    document.getElementById('blogModalTitle').textContent='Edit Blog';
-    document.getElementById('bTitle').value=b.title||'';
-    document.getElementById('bTitle').dataset.id=b.id;
-    document.getElementById('bContent').value=b.content||'';
-    document.getElementById('bCat').value=b.category||'';
-    document.getElementById('bImage').value=b.cover_image||'';
-    document.getElementById('bEmoji').value=b.emoji||'';
-    openModal('blogModal');
-  };
-
-  document.getElementById('blogForm').addEventListener('submit',async function(e){
-    e.preventDefault();
-    const id=document.getElementById('bTitle').dataset.id;
-    const payload={
-      title:document.getElementById('bTitle').value.trim(),
-      content:document.getElementById('bContent').value.trim(),
-      category:document.getElementById('bCat').value.trim()||'General',
-      cover_image:document.getElementById('bImage').value.trim(),
-      emoji:document.getElementById('bEmoji').value.trim()||'📝'
-    };
-    try{
-      const {error}=id
-        ? await sb.from('blogs').update(payload).eq('id',id)
-        : await sb.from('blogs').insert(payload);
-      if(error)throw error;
-      closeModal('blogModal');await loadBlogs();
-    }catch(err){alert('Save failed: '+err.message);}
-  });
-
-  window.deleteBlog=async function(id){
-    if(!confirm('Delete this blog?'))return;
-    try{
-      const {error}=await sb.from('blogs').delete().eq('id',id);
-      if(error)throw error;
-      await loadBlogs();
-    }catch(err){alert('Delete failed: '+err.message);}
-  };
-
-  function emptyState(emoji,text){return `<div class="empty"><span class="big">${emoji}</span>${esc(text)}</div>`;}
-</script>
+<script src="admin.js"></script>
 </body>
 </html>
