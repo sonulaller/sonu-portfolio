@@ -41,6 +41,12 @@ function toast(message, type){
   document.getElementById('toasts').appendChild(box);
   setTimeout(() => { box.style.opacity = '0'; setTimeout(() => box.remove(), 300); }, 4000);
 }
+function withTimeout(promise, ms, message){
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(message)), ms))
+  ]);
+}
 function busy(btn, on, label){
   if(!btn) return;
   if(on){
@@ -370,7 +376,11 @@ document.getElementById('imagesWrap').addEventListener('click', async function(e
     if(!file){ toast('Pehle "Edit Image" se file choose karo', 'err'); return; }
     busy(saveImg, true, 'Uploading…');
     const path = key + '/' + Date.now() + '-' + file.name.replace(/[^\w.\-]+/g, '_');
-    const { error } = await sb.storage.from(BUCKET).upload(path, file, { cacheControl:'3600', upsert:false });
+    const { error } = await withTimeout(
+      sb.storage.from(BUCKET).upload(path, file, { cacheControl:'3600', upsert:false }),
+      60000,
+      'Upload 60 second me complete nahi hua'
+    );
     if(error){
       busy(saveImg, false);
       toast('Upload fail: ' + error.message, 'err');
