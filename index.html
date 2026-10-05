@@ -88,6 +88,9 @@
   .navlinks a:not(.btn):hover:after{width:100%;}
   .navlinks .btn{border:1px solid rgba(34,211,238,.5);padding:9px 18px;border-radius:8px;color:#a5f3fc;}
   .navlinks .btn:hover{background:rgba(34,211,238,.1);color:#fff;}
+  .nav-social a{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;color:var(--muted);background:rgba(255,255,255,.04);transition:.3s;}
+  .nav-social a:hover{color:var(--cyan);background:rgba(34,211,238,.15);transform:translateY(-2px);}
+  .nav-social svg{width:20px;height:20px;}
   .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:60;}
   .burger span{width:24px;height:2px;background:#fff;border-radius:2px;transition:.3s;}
 
@@ -319,6 +322,8 @@
       transform:translateX(100%);transition:transform .4s;box-shadow:-20px 0 60px rgba(0,0,0,.5);}
     .navlinks.open{transform:translateX(0);}
     .navlinks a{font-size:16px;}
+    .nav-social{display:flex;gap:16px;margin-top:16px;}
+    .nav-social a{width:48px;height:48px;background:rgba(255,255,255,.06);}
     .burger{display:flex;}
     .burger.x span:nth-child(1){transform:translateY(7px) rotate(45deg);}
     .burger.x span:nth-child(2){opacity:0;}
@@ -349,6 +354,21 @@
     <li><a href="#projects">PROJECTS</a></li>
     <li><a href="#vision">VISION</a></li>
     <li><a href="/blogs" target="_blank" rel="noopener">BLOGS ↗</a></li>
+    <li class="nav-social">
+      <a href="https://www.instagram.com/sonulaller" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+    </li>
+    <li class="nav-social">
+      <a href="https://github.com/sonulaller" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </a>
+    </li>
+    <li class="nav-social">
+      <a href="https://www.linkedin.com/in/sonulaller" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+    </li>
     <li><a class="btn" href="#contact">CONTACT</a></li>
   </ul>
   <div class="burger" id="burger" aria-label="Toggle menu"><span></span><span></span><span></span></div>
