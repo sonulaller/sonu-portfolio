@@ -340,8 +340,17 @@
               <div class="field"><label>Link</label><input type="url" id="pLink" placeholder="https://..."></div>
               <div class="field"><label>Tech Stack (comma separated)</label><input type="text" id="pTech" placeholder="React, Node.js"></div>
               <div class="field"><label>Emoji / Icon</label><input type="text" id="pEmoji" placeholder="🚀" maxlength="4"></div>
+              <div class="field"><label>Project Image</label>
+                <input type="file" accept="image/*" class="hidden" data-imgfile="project">
+                <div class="row-btns">
+                  <button class="btn ghost" type="button" data-imgpick="project">Choose Image</button>
+                  <button class="btn primary" type="button" data-imgsave="project" disabled>Upload Image</button>
+                  <button class="btn danger" type="button" data-imgdel="project">Remove</button>
+                </div>
+                <div class="preview" data-imgprev="project" style="min-height:120px;margin-top:12px;">No image</div>
+              </div>
               <button class="add-btn" id="projectSubmit" type="submit" style="width:100%;">Save Project</button>
-              <p class="hint">Title, description aur link ke saath project turant portfolio me dikh jayega.</p>
+              <p class="hint">Title, description aur link ke saath project turant portfolio me dikh jayega. Image upload karoge to card par photo dikhegi.</p>
             </form>
           </div>
         </div>
@@ -396,6 +405,16 @@
           </div>
           <button class="add-btn" id="toolSubmit" type="submit">+ Add Tool</button>
         </form>
+        <div class="field" style="margin:16px 0 0;">
+          <label>Tool Image (optional — icon ki jagah logo dikhega)</label>
+          <input type="file" accept="image/*" class="hidden" data-imgfile="tool">
+          <div class="row-btns">
+            <button class="btn ghost" type="button" data-imgpick="tool">Choose Image</button>
+            <button class="btn primary" type="button" data-imgsave="tool" disabled>Upload</button>
+            <button class="btn danger" type="button" data-imgdel="tool">Remove</button>
+          </div>
+          <div class="preview" data-imgprev="tool" style="min-height:80px;margin-top:10px;">No image</div>
+        </div>
       </div>
       <div class="sub-head">Your Tools</div>
       <div class="status" id="toolStatus" style="margin-bottom:14px;"></div>
@@ -467,7 +486,15 @@
       <div class="field"><label>Content</label><textarea id="bContent" placeholder="Write your blog content here..."></textarea></div>
       <div class="pw-row">
         <div class="field"><label>Category</label><input type="text" id="bCat" placeholder="Web Dev"></div>
-        <div class="field"><label>Cover Image URL</label><input type="url" id="bImage" placeholder="https://... (optional)"></div>
+        <div class="field"><label>Cover Image</label>
+          <input type="file" accept="image/*" class="hidden" data-imgfile="blog">
+          <div class="row-btns">
+            <button class="btn ghost" type="button" data-imgpick="blog">Choose Image</button>
+            <button class="btn primary" type="button" data-imgsave="blog" disabled>Upload</button>
+          </div>
+          <div class="preview" data-imgprev="blog" style="min-height:90px;margin-top:10px;">No image</div>
+          <input type="hidden" id="bImage">
+        </div>
       </div>
       <div class="field"><label>Emoji / Icon</label><input type="text" id="bEmoji" placeholder="📝" maxlength="4"></div>
       <div class="modal-actions">

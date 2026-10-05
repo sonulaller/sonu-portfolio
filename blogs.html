@@ -159,6 +159,10 @@
   .gh-card:hover{transform:translateY(-8px);border-color:rgba(34,211,238,.45);box-shadow:0 24px 60px rgba(0,0,0,.45);}
   .gh-card:hover::before{transform:scaleX(1);}
   .gh-top{display:flex;align-items:center;gap:10px;}
+  .gh-shot{border-radius:14px;overflow:hidden;margin-bottom:16px;border:1px solid var(--line);background:#070b13;aspect-ratio:16/9;}
+  .gh-shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s cubic-bezier(.2,.7,.3,1);}
+  .gh-shot img.avatar{object-fit:cover;}
+  .gh-card:hover .gh-shot img{transform:scale(1.06);}
   .gh-emoji{font-size:26px;filter:drop-shadow(0 6px 16px rgba(34,211,238,.35));}
   .gh-card h3{font-size:18px;font-weight:700;word-break:break-word;}
   .gh-card p{color:#aeb9c8;font-size:13.5px;line-height:1.7;flex:1;}
@@ -344,13 +348,19 @@
     return '🚀';
   };
   const DEMO={'sonu-portfolio':'https://sonu-portfolio-server.vercel.app/','NLSPSCHOOL':'https://sonulaller.github.io/NLSPSCHOOL/','screw-nuts.':'https://remix-screw-nuts-mechanical-puzzles-1638.ai.studio'};
+  const GH_OWNER='sonulaller';
+  const COVER={'NLSPSCHOOL':'nlsp-school.jpg','screw-nuts.':'screw-nuts.jpg','sonu-portfolio':'og-image.jpg'};
   const LANG_COLOR={javascript:'#f7df1e',typescript:'#3178c6',html:'#e34c26',css:'#1572b6',python:'#3572a5',java:'#b07219',c:'#555555','c++':'#f34b7d',php:'#777bb4',ruby:'#cc342d',swift:'#f05138',kotlin:'#a97bff','c#':'#178600'};
   const repoCard=r=>{
     const desc=r.description||'Project source code and live demo built by Sonu Laller.';
     const topics=(r.topics||[]).slice(0,4).map(t=>`<span>${esc(t)}</span>`).join('');
     const live=DEMO[r.name]||(r.homepage&&/^https?:/i.test(r.homepage)?r.homepage:'');
     const lang=(r.language||'').toLowerCase();
+    const shot=COVER[r.name]||'';
     return `<article class="gh-card reveal in">
+        <div class="gh-shot">${shot
+          ? `<img src="${esc(shot)}" alt="${esc(r.name)}" loading="lazy">`
+          : `<img class="avatar" src="https://avatars.githubusercontent.com/${esc(GH_OWNER)}?s=200" alt="${esc(GH_OWNER)}" loading="lazy">`}</div>
         <div class="gh-top"><span class="gh-emoji">${pickEmoji(r.name,r.description)}</span><h3>${esc(r.name)}</h3></div>
         <p>${esc(desc)}</p>
         ${topics?`<div class="gh-topics">${topics}</div>`:''}

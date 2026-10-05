@@ -18,8 +18,10 @@ const pendingFiles = {};
 
 const IMAGE_SLOTS = [
   { key:'hero',    title:'Hero Section', textKey:'hero_tag',    hint:'Hero section ka main paragraph (ek line).' },
-  { key:'about',   title:'About Me',     textKey:'about_body',  hint:'About Me ke paragraphs — har paragraph alag line me.' },
-  { key:'journey', title:'My Journey',   textKey:'journey_body',hint:'Har line ek journey item. Title aur description ke beech | lagao, jaise: Getting Started | HTML, CSS seekha.' }
+  { key:'about',   title:'About Me',     textKey:'about_body',  hint:'About Me ke paragraphs - har paragraph alag line me.' },
+  { key:'journey', title:'My Journey',   textKey:'journey_body',hint:'Har line ek journey item. Title aur description ke beech | lagao, jaise: Getting Started | HTML, CSS seekha.' },
+  { key:'vision',  title:'My Vision',    textKey:null,          hint:'Vision section ki image.' },
+  { key:'contact', title:'Contact',      textKey:null,          hint:'Contact section ki image.' }
 ];
 
 function esc(value){
@@ -313,7 +315,7 @@ function renderImageCards(){
         <button class="btn danger" data-del-image="${slot.key}">Delete Image</button>
       </div>
       <input type="file" accept="image/*" class="hidden" data-file="${slot.key}">
-      <div class="text-edit">
+      ${slot.textKey ? `<div class="text-edit">
         <div class="row-btns">
           <button class="btn ghost" data-toggle-text="${slot.textKey}">Add Text</button>
           <button class="btn primary" data-save-text="${slot.textKey}" disabled>Save Text</button>
@@ -322,10 +324,12 @@ function renderImageCards(){
           <textarea data-text="${slot.textKey}" placeholder="${esc(slot.hint)}"></textarea>
         </div>
         <p class="hint">${slot.hint}</p>
-      </div>
+      </div>` : ''}
     </div>`).join('');
   IMAGE_SLOTS.forEach(slot => {
+    if(!slot.textKey) return;
     const area = wrap.querySelector('[data-text="' + slot.textKey + '"]');
+    if(!area) return;
     area.addEventListener('input', function(){
       wrap.querySelector('[data-save-text="' + slot.textKey + '"]').disabled = false;
     });
@@ -454,6 +458,86 @@ async function removeOldFiles(key, keepPath){
   }catch(err){ /* storage cleanup optional */ }
 }
 
+/* ---------------- FORM IMAGE UPLOADS (projects / blogs / tools) ---------------- */
+const formImg = {
+  project:{ file:null, url:'' },
+  blog:{ file:null, url:'' },
+  tool:{ file:null, url:'' }
+};
+const IMG_PREFIX = { project:'projects', blog:'blogs', tool:'tools' };
+
+async function uploadToBucket(file, prefix){
+  const safe = file.name.replace(/[^\w.\-]+/g, '_');
+  const path = prefix + '/' + Date.now() + '-' + safe;
+  const { error } = await withTimeout(
+    sb.storage.from(BUCKET).upload(path, file, { cacheControl:'3600', upsert:false }),
+    60000,
+    'Upload 60 second me complete nahi hua'
+  );
+  if(error) throw new Error(error.message);
+  return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
+document.addEventListener('change', function(e){
+  const input = e.target.closest('[data-imgfile]');
+  if(!input) return;
+  const kind = input.dataset.imgfile;
+  const file = input.files && input.files[0];
+  if(!file) return;
+  if(file.size > 6 * 1024 * 1024){ toast('Image 6 MB se chhoti honi chahiye', 'err'); input.value = ''; return; }
+  formImg[kind] = { file, url:'' };
+  const prev = document.querySelector('[data-imgprev="' + kind + '"]');
+  if(prev){ prev.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')'; prev.textContent = ''; }
+  const btn = document.querySelector('[data-imgsave="' + kind + '"]');
+  if(btn) btn.disabled = false;
+});
+
+document.addEventListener('click', async function(e){
+  const pick = e.target.closest('[data-imgpick]');
+  const save = e.target.closest('[data-imgsave]');
+  const del = e.target.closest('[data-imgdel]');
+  if(pick){
+    const input = document.querySelector('[data-imgfile="' + pick.dataset.imgpick + '"]');
+    if(input) input.click();
+    return;
+  }
+  if(save){
+    const kind = save.dataset.imgsave;
+    const st = formImg[kind];
+    if(!st.file){ toast('Pehle "Choose Image" dabao', 'err'); return; }
+    const prev = document.querySelector('[data-imgprev="' + kind + '"]');
+    busy(save, true, 'Uploading…');
+    let url = '';
+    try{ url = await uploadToBucket(st.file, IMG_PREFIX[kind]); }
+    catch(err){ busy(save, false); toast('Upload fail: ' + err.message, 'err'); return; }
+    st.url = url;
+    if(prev){ prev.style.backgroundImage = 'url("' + url + '")'; prev.textContent = ''; }
+    if(kind === 'blog') document.getElementById('bImage').value = url;
+    if(kind === 'project' && editingProjectId){
+      const { error } = await sb.from('projects').update({ cover_image:url }).eq('id', editingProjectId);
+      if(error){ busy(save, false); toast('DB save fail: ' + error.message, 'err'); return; }
+    }
+    busy(save, false);
+    save.disabled = true;
+    toast('Image upload ho gayi', 'ok');
+    return;
+  }
+  if(del){
+    const kind = del.dataset.imgdel;
+    formImg[kind] = { file:null, url:'' };
+    const prev = document.querySelector('[data-imgprev="' + kind + '"]');
+    if(prev){ prev.style.backgroundImage = ''; prev.textContent = 'No image'; }
+    const input = document.querySelector('[data-imgfile="' + kind + '"]');
+    if(input) input.value = '';
+    if(kind === 'blog') document.getElementById('bImage').value = '';
+    if(kind === 'project' && editingProjectId){
+      const { error } = await sb.from('projects').update({ cover_image:'' }).eq('id', editingProjectId);
+      if(error) toast('DB update fail: ' + error.message, 'err');
+    }
+    toast('Image hata di', 'ok');
+  }
+});
+
 /* ---------------- PROJECTS ---------------- */
 document.getElementById('projectForm').addEventListener('submit', async function(e){
   e.preventDefault();
@@ -463,7 +547,8 @@ document.getElementById('projectForm').addEventListener('submit', async function
     description: document.getElementById('pDesc').value.trim(),
     live_link: document.getElementById('pLink').value.trim(),
     tech_stack: document.getElementById('pTech').value.trim(),
-    emoji: document.getElementById('pEmoji').value.trim() || '🚀'
+    emoji: document.getElementById('pEmoji').value.trim() || '🚀',
+    cover_image: formImg.project.url
   };
   if(!payload.title){ toast('Title likhna zaroori hai', 'err'); return; }
   const wasEditing = Boolean(editingProjectId);
@@ -582,6 +667,7 @@ document.getElementById('toolForm').addEventListener('submit', async function(e)
   const { error } = await sb.from('capabilities').insert({
     name,
     icon: document.getElementById('tIcon').value.trim() || '⚡',
+    image_url: formImg.tool.url,
     sort_order: state.tools.length + 1
   });
   busy(btn, false);

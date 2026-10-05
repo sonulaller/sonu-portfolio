@@ -238,6 +238,16 @@
   .proj-visual .em{font-size:52px;display:block;margin-bottom:14px;filter:drop-shadow(0 6px 18px rgba(34,211,238,.35));
     transition:transform .45s cubic-bezier(.2,.7,.3,1);}
   .proj-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(5,7,13,.4));}
+  .proj-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+  .proj-visual.has-img{align-items:flex-end;justify-content:flex-start;text-align:left;padding:20px;}
+  .proj-visual.has-img::after{background:linear-gradient(180deg,transparent 45%,rgba(5,7,13,.85));}
+  .proj-visual.has-img .cap-label{position:relative;z-index:1;font-size:15px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.6);}
+  .cap .ic img{width:30px;height:30px;object-fit:contain;border-radius:8px;display:block;}
+  .vision-photo,.contact-photo{max-width:820px;margin:0 auto 32px;border:1px solid var(--line);border-radius:18px;
+    overflow:hidden;background:var(--surface);box-shadow:0 20px 45px rgba(0,0,0,.35);}
+  .vision-photo img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;}
+  .contact-photo{max-width:640px;}
+  .contact-photo img{width:100%;max-height:300px;object-fit:cover;display:block;}
   .proj-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
   .proj-head h3{font-size:25px;font-weight:700;}
   .tag-pill{border:1px solid rgba(34,211,238,.4);padding:5px 14px;border-radius:30px;font-size:11px;font-weight:700;color:#a5f3fc;background:rgba(34,211,238,.08);}
@@ -461,6 +471,9 @@
     <div class="kicker">My Vision</div>
     <h2 class="sec-title">How I <span>Think</span></h2>
   </div>
+  <div class="vision-photo reveal" id="visionPhoto" style="display:none;">
+    <img id="visionPhotoImg" src="" alt="My vision" loading="lazy">
+  </div>
   <div class="vision-wrap" id="visionWrap">
     <div class="vision-line reveal">I don't wait for the perfect setup.</div>
     <div class="vision-line accent reveal">I start with what I have.</div>
@@ -475,6 +488,9 @@
   <div class="sec-head reveal">
     <div class="kicker">Contact</div>
     <h2 class="sec-title">Let's Build Something <span>Together</span></h2>
+  </div>
+  <div class="contact-photo reveal" id="contactPhoto" style="display:none;">
+    <img id="contactPhotoImg" src="" alt="Get in touch" loading="lazy">
   </div>
   <p class="sub reveal">Have a project idea, or a website that needs fixing? Let's connect — I reply fast.</p>
   <form id="contactForm" class="reveal" novalidate>
@@ -611,12 +627,21 @@
         tag:'Game'
       }
     ];
-    function renderProjects(items){
+const LOCAL_COVER={
+      'NLSP School Website':'nlsp-school.jpg',
+      'Screw Nuts':'screw-nuts.jpg',
+      'screw-nuts.':'screw-nuts.jpg'
+    };
+function renderProjects(items){
       listHolder.innerHTML=items.map(p=>{
         const tech=(p.tech_stack||[]).map(t=>`<span>${t}</span>`).join('');
+        const cover=p.cover_image||LOCAL_COVER[p.title]||'';
+        const shot=cover
+          ? `<img src="${cover}" alt="${p.title}" loading="lazy">`
+          : `<span class="em">${p.image_emoji||'🚀'}</span>${p.title}`;
         return `
         <div class="proj-card reveal in">
-          <div class="proj-visual"><span class="em">${p.image_emoji||'🚀'}</span>${p.title}</div>
+          <div class="proj-visual${cover?' has-img':''}">${cover?shot+`<span class="cap-label">${p.title}</span>`:shot}</div>
           <div>
             <div class="proj-head"><h3>${p.title}</h3>${p.tag?`<span class="tag-pill">${p.tag}</span>`:''}</div>
             <p>${p.description||''}</p>
@@ -697,6 +722,16 @@
       const img=document.getElementById('journeyPhotoImg');
       if(wrap&&img){img.src=images.journey;wrap.style.display='block';wrap.classList.add('in');}
     }
+    if(images.vision){
+      const wrap=document.getElementById('visionPhoto');
+      const img=document.getElementById('visionPhotoImg');
+      if(wrap&&img){img.src=images.vision;wrap.style.display='block';wrap.classList.add('in');}
+    }
+    if(images.contact){
+      const wrap=document.getElementById('contactPhoto');
+      const img=document.getElementById('contactPhotoImg');
+      if(wrap&&img){img.src=images.contact;wrap.style.display='block';wrap.classList.add('in');}
+    }
     if(quals.length){
       const el=document.getElementById('eduGrid');
       if(el)el.innerHTML=quals.map(q=>{
@@ -711,7 +746,12 @@
     }
     if(tools.length){
       const el=document.getElementById('capGrid');
-      if(el)el.innerHTML=tools.map(t=>`<div class="cap reveal in"><div class="ic">${esc(t.icon||'⚡')}</div><span>${esc(t.name)}</span></div>`).join('');
+      if(el)el.innerHTML=tools.map(t=>{
+        const icon=t.image_url
+          ? `<div class="ic"><img src="${t.image_url}" alt="${esc(t.name)}" loading="lazy"></div>`
+          : `<div class="ic">${esc(t.icon||'⚡')}</div>`;
+        return `<div class="cap reveal in">${icon}<span>${esc(t.name)}</span></div>`;
+      }).join('');
     }
   })();
 
