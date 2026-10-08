@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projects &amp; Blog — Sonu Laller | Web Developer &amp; AI Enthusiast</title>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NQ1135EL7Q"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-NQ1135EL7Q');
+</script>
+<title>Projects & Blog — Sonu Laller | Web Developer & AI Enthusiast</title>
 <meta name="description" content="All GitHub projects by Sonu Laller with live demos and source code, plus blog articles on web development, AI tools, SEO, and building real products from scratch.">
 <meta name="author" content="Sonu Laller">
 <meta name="keywords" content="Sonu Laller, projects, GitHub, web development, AI tools, SEO, blog, HTML, CSS, JavaScript">
@@ -12,7 +20,7 @@
 <link rel="canonical" href="https://sonu-portfolio-server.vercel.app/blogs">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sonu Laller — Portfolio">
-<meta property="og:title" content="Projects &amp; Blog — Sonu Laller">
+<meta property="og:title" content="Projects & Blog — Sonu Laller">
 <meta property="og:description" content="Every GitHub project with live demo and source code, plus articles on web development, AI tools and SEO.">
 <meta property="og:url" content="https://sonu-portfolio-server.vercel.app/blogs">
 <meta property="og:image" content="https://sonu-portfolio-server.vercel.app/og-image.jpg">
@@ -20,7 +28,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Sonu Laller — self-taught web developer from Haryana">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Projects &amp; Blog — Sonu Laller">
+<meta name="twitter:title" content="Projects & Blog — Sonu Laller">
 <meta name="twitter:description" content="Every GitHub project with live demo and source code, plus articles on web development, AI tools and SEO.">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%2322d3ee"/><stop offset="1" stop-color="%238b5cf6"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="%2305070d"/><text x="50" y="68" font-size="52" font-family="Arial" font-weight="900" text-anchor="middle" fill="url(%23g)">S</text></svg>'>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -216,7 +224,7 @@
   }
   @media(max-width:560px){
     .blog-grid{grid-template-columns:1fr;}
-    .gh-grid{grid-template-columns:1fr;}
+    .gh_grid{grid-template-columns:1fr;}
     section{padding:80px 6vw;}
     .nl-form{flex-direction:column;}
     .nl-form button{padding:14px;}
@@ -242,8 +250,8 @@
 </nav>
 
 <section class="blog-hero">
-  <div class="kicker reveal">💻 Projects &amp; 📝 Writing</div>
-  <h1 class="sec-title reveal">Projects &amp; <span>Blog</span></h1>
+  <div class="kicker reveal">💻 Projects & 📝 Writing</div>
+  <h1 class="sec-title reveal">Projects & <span>Blog</span></h1>
   <p class="sub reveal">Every project I build and ship on GitHub — with live demo and full source code — plus the articles I write while building them. Web development, AI tools, SEO and real products from scratch.</p>
 </section>
 
@@ -336,7 +344,7 @@
   // GitHub projects — loaded live from the public GitHub API
   const GH_USER='sonulaller';
   const ghGrid=document.getElementById('ghGrid');
-  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&','<':'<','>':'>','"':'"',"'":'''}[c]));
   const pickEmoji=(name,desc)=>{
     const t=(name+' '+(desc||'')).toLowerCase();
     if(/school|education|nlsp/.test(t))return '🏫';
